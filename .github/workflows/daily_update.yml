@@ -1,0 +1,31 @@
+name: Daily Evening Market Update
+
+on:
+  schedule:
+    - cron: '30 13 * * *' # 7:00 PM IST
+  workflow_dispatch:
+
+jobs:
+  scrape-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install required tools
+        run: pip install requests beautifulsoup4
+
+      - name: Run Scraper Robot
+        run: python scraper.py
+
+      - name: Commit and Push New Data
+        run: |
+          git config --global user.name "Market Truths Auto-Bot"
+          git config --global user.email "bot@indianmarkettruths.com"
+          git add market_data.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update evening edition" && git push)
