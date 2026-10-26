@@ -1,0 +1,1867 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>INDIAN MARKET TRUTHS — Morning Capital Intelligence</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Playfair Display, Inter, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['Newsreader', 'Georgia', 'serif'],
+            sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            parchment: {
+              50: '#FAF9F6',
+              100: '#F5F3EF',
+              200: '#EAE6DF',
+              300: '#DBD5C9',
+              800: '#2A2826',
+              900: '#1B1A18',
+              950: '#121110',
+            },
+            crimson: {
+              DEFAULT: '#9E1C1C',
+              dark: '#7A1313',
+              light: '#BE2E2E'
+            },
+            market: {
+              green: '#107C41',
+              red: '#C5221F',
+              amber: '#B06000'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Editorial Paper Grain & Typography */
+    body {
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+    .paper-texture {
+      background-color: #FAF8F5;
+      background-image: radial-gradient(#E8E3DC 0.65px, transparent 0.65px);
+      background-size: 16px 16px;
+    }
+    .dark .paper-texture {
+      background-color: #121110;
+      background-image: radial-gradient(#242220 0.65px, transparent 0.65px);
+      background-size: 16px 16px;
+    }
+    /* Hide scrollbar for ticker tabs */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    /* Monospace tabular numbers */
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+    /* Sticky header drop shadow */
+    .subtle-border {
+      border-color: rgba(0, 0, 0, 0.08);
+    }
+    .dark .subtle-border {
+      border-color: rgba(255, 255, 255, 0.08);
+    }
+  </style>
+</head>
+<body class="paper-texture text-stone-900 dark:text-stone-100 font-sans transition-colors duration-200">
+
+  <!-- Top Progress Bar -->
+  <div id="scroll-progress-container" class="fixed top-0 left-0 w-full h-[3px] bg-transparent z-50">
+    <div id="scroll-progress-bar" class="h-full bg-crimson w-0 transition-all duration-75"></div>
+  </div>
+
+  <!-- Announcement / Audio Ticker Strip -->
+  <div class="border-b border-stone-200 dark:border-stone-800 bg-stone-100/90 dark:bg-stone-900/90 backdrop-blur text-xs py-1.5 px-4">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 font-mono">
+      <div class="flex items-center space-x-3">
+        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-crimson text-white tracking-widest uppercase">
+          LIVE BRIEF
+        </span>
+        <span id="top-announcement-text" class="text-stone-600 dark:text-stone-400 truncate">
+          October 26, 2026 · Evening Sync Ready · Gift Nifty suggests +44 pts open at 26,180
+        </span>
+      </div>
+
+      <!-- Utilities: Admin Sync, Font size, Audio player, Theme Toggle -->
+      <div class="flex items-center space-x-3 sm:space-x-4">
+        <!-- Prominent Admin / Evening Sync Button -->
+        <button onclick="openAdminModal()" class="flex items-center space-x-1.5 px-2.5 py-1 rounded bg-crimson hover:bg-crimson-dark text-white font-mono text-[11px] font-bold shadow-sm transition cursor-pointer">
+          <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+          <span>⚡ Evening Sync / Admin</span>
+        </button>
+
+        <!-- Font Size Adjuster -->
+        <div class="hidden sm:flex items-center space-x-1 border border-stone-300 dark:border-stone-700 rounded px-1.5 py-0.5 bg-white dark:bg-stone-800">
+          <span class="text-[10px] text-stone-500 mr-1 uppercase">Font</span>
+          <button onclick="setFontSize('sm')" class="px-1 hover:text-crimson font-medium text-xs" title="Compact Font">A-</button>
+          <button onclick="setFontSize('base')" class="px-1 hover:text-crimson font-bold text-xs" title="Standard Font">A</button>
+          <button onclick="setFontSize('lg')" class="px-1 hover:text-crimson font-extrabold text-sm" title="Large Font">A+</button>
+        </div>
+
+        <!-- Audio Briefing Player -->
+        <button id="tts-btn" onclick="toggleAudioBriefing()" class="flex items-center space-x-1.5 text-stone-700 dark:text-stone-300 hover:text-crimson transition-colors">
+          <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
+          <span id="tts-label" class="hidden md:inline">Listen to Brief</span>
+        </button>
+
+        <!-- Dark Mode Toggle -->
+        <button onclick="toggleDarkMode()" class="p-1 rounded text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-800 transition" aria-label="Toggle Dark Mode">
+          <i data-lucide="moon" class="w-3.5 h-3.5 block dark:hidden"></i>
+          <i data-lucide="sun" class="w-3.5 h-3.5 hidden dark:block text-amber-400"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Masthead -->
+  <header class="border-b border-stone-300 dark:border-stone-800 bg-white/60 dark:bg-stone-900/40 backdrop-blur-md pt-7 pb-5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col items-center text-center">
+        <!-- Sub-header metadata -->
+        <div class="text-[11px] sm:text-xs font-mono uppercase tracking-[0.25em] text-stone-500 dark:text-stone-400 mb-2">
+          Independent Capital Intelligence · Institutional Research Digest
+        </div>
+
+        <!-- Title -->
+        <h1 id="masthead-title" class="font-serif text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-stone-950 dark:text-stone-50 mb-2">
+          INDIAN MARKET TRUTHS
+        </h1>
+
+        <!-- Subtitle -->
+        <p id="masthead-subtitle" class="font-serif italic text-base sm:text-lg text-stone-700 dark:text-stone-300 max-w-2xl">
+          "A fast, fact-dense morning & evening brief on Indian capital markets, macro liquidity, and corporate reality."
+        </p>
+
+        <!-- Edition Info Row -->
+        <div class="w-full flex flex-wrap items-center justify-between border-t border-b border-stone-200 dark:border-stone-800 mt-5 py-2 text-xs font-mono text-stone-600 dark:text-stone-400 gap-2">
+          <div class="flex items-center flex-wrap gap-2">
+            <span id="edition-vol">VOL. III · ISSUE 248</span>
+            <span>|</span>
+            <span id="edition-date-display" class="font-bold text-stone-900 dark:text-stone-100">MONDAY, OCTOBER 26, 2026</span>
+            <span id="sync-status-badge" class="hidden px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 text-[10px]">
+              Synced with Live Source
+            </span>
+          </div>
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span id="last-sync-timestamp">7:45 PM IST EVENING EDITION</span>
+            </span>
+            <button onclick="openAdminModal()" class="hover:text-crimson flex items-center gap-1 font-bold text-crimson">
+              <i data-lucide="database" class="w-3.5 h-3.5"></i>
+              <span>Backend Sync</span>
+            </button>
+            <button onclick="window.print()" class="hover:text-crimson flex items-center gap-1">
+              <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+              <span>Print/PDF</span>
+            </button>
+            <button onclick="openShareModal()" class="hover:text-crimson flex items-center gap-1">
+              <i data-lucide="share-2" class="w-3.5 h-3.5"></i>
+              <span>Share</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Market Ticker Ribbon (Hero Numbers with Mini Sparklines) -->
+  <section class="border-b border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 overflow-x-auto no-scrollbar shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 py-2.5 flex items-center justify-between gap-6 min-w-max">
+      
+      <!-- Nifty 50 -->
+      <div class="flex items-center space-x-2.5">
+        <div>
+          <div class="text-[10px] font-mono text-stone-500 uppercase tracking-wider">Nifty 50</div>
+          <div id="ticker-nifty-val" class="text-sm font-mono font-bold tabular-nums">26,136.40</div>
+        </div>
+        <svg class="w-10 h-5 stroke-emerald-500 fill-none" viewBox="0 0 40 20"><polyline stroke-width="1.8" points="0,15 8,12 16,14 24,8 32,9 40,3"/></svg>
+        <div class="text-right">
+          <div id="ticker-nifty-chg" class="text-xs font-mono font-semibold text-emerald-600 dark:text-emerald-400 flex items-center">
+            ▲ +0.38%
+          </div>
+          <div class="text-[10px] font-mono text-stone-500">+98.20</div>
+        </div>
+      </div>
+
+      <div class="h-6 w-px bg-stone-200 dark:bg-stone-800"></div>
+
+      <!-- Sensex -->
+      <div class="flex items-center space-x-2.5">
+        <div>
+          <div class="text-[10px] font-mono text-stone-500 uppercase tracking-wider">Sensex</div>
+          <div id="ticker-sensex-val" class="text-sm font-mono font-bold tabular-nums">85,410.15</div>
+        </div>
+        <svg class="w-10 h-5 stroke-emerald-500 fill-none" viewBox="0 0 40 20"><polyline stroke-width="1.8" points="0,16 10,13 20,11 30,7 40,4"/></svg>
+        <div class="text-right">
+          <div id="ticker-sensex-chg" class="text-xs font-mono font-semibold text-emerald-600 dark:text-emerald-400">
+            ▲ +0.31%
+          </div>
+          <div class="text-[10px] font-mono text-stone-500">+264.40</div>
+        </div>
+      </div>
+
+      <div class="h-6 w-px bg-stone-200 dark:bg-stone-800"></div>
+
+      <!-- Bank Nifty -->
+      <div class="flex items-center space-x-2.5">
+        <div>
+          <div class="text-[10px] font-mono text-stone-500 uppercase tracking-wider">Nifty Bank</div>
+          <div id="ticker-bank-val" class="text-sm font-mono font-bold tabular-nums">54,820.90</div>
+        </div>
+        <svg class="w-10 h-5 stroke-rose-500 fill-none" viewBox="0 0 40 20"><polyline stroke-width="1.8" points="0,5 10,8 20,7 30,13 40,16"/></svg>
+        <div class="text-right">
+          <div id="ticker-bank-chg" class="text-xs font-mono font-semibold text-rose-600 dark:text-rose-400">
+            ▼ -0.18%
+          </div>
+          <div class="text-[10px] font-mono text-stone-500">-99.10</div>
+        </div>
+      </div>
+
+      <div class="h-6 w-px bg-stone-200 dark:bg-stone-800"></div>
+
+      <!-- India VIX -->
+      <div class="flex items-center space-x-2.5">
+        <div>
+          <div class="text-[10px] font-mono text-stone-500 uppercase tracking-wider">India VIX</div>
+          <div id="ticker-vix-val" class="text-sm font-mono font-bold tabular-nums">12.18</div>
+        </div>
+        <div class="text-right">
+          <div id="ticker-vix-chg" class="text-xs font-mono font-semibold text-emerald-600 dark:text-emerald-400">
+            ▼ -3.40%
+          </div>
+          <div class="text-[10px] font-mono text-stone-500">Cooling</div>
+        </div>
+      </div>
+
+      <div class="h-6 w-px bg-stone-200 dark:bg-stone-800"></div>
+
+      <!-- Brent Crude -->
+      <div class="flex items-center space-x-2.5">
+        <div>
+          <div class="text-[10px] font-mono text-stone-500 uppercase tracking-wider">Brent Crude</div>
+          <div id="ticker-brent-val" class="text-sm font-mono font-bold tabular-nums">$73.40</div>
+        </div>
+        <div class="text-right">
+          <div id="ticker-brent-chg" class="text-xs font-mono font-semibold text-emerald-600 dark:text-emerald-400">
+            ▼ -0.65%
+          </div>
+          <div class="text-[10px] font-mono text-stone-500">$/bbl</div>
+        </div>
+      </div>
+
+      <div class="h-6 w-px bg-stone-200 dark:bg-stone-800"></div>
+
+      <!-- USD/INR -->
+      <div class="flex items-center space-x-2.5">
+        <div>
+          <div class="text-[10px] font-mono text-stone-500 uppercase tracking-wider">USD / INR</div>
+          <div id="ticker-usdinr-val" class="text-sm font-mono font-bold tabular-nums">84.08</div>
+        </div>
+        <div class="text-right">
+          <div class="text-xs font-mono font-semibold text-stone-600 dark:text-stone-300">
+            Flat
+          </div>
+          <div class="text-[10px] font-mono text-stone-500">RBI Active</div>
+        </div>
+      </div>
+
+      <div class="h-6 w-px bg-stone-200 dark:bg-stone-800"></div>
+
+      <!-- 10-Yr G-Sec -->
+      <div class="flex items-center space-x-2.5">
+        <div>
+          <div class="text-[10px] font-mono text-stone-500 uppercase tracking-wider">10Y G-Sec</div>
+          <div id="ticker-gsec-val" class="text-sm font-mono font-bold tabular-nums">6.81%</div>
+        </div>
+        <div class="text-right">
+          <div class="text-xs font-mono font-semibold text-emerald-600 dark:text-emerald-400">
+            ▼ -2 bps
+          </div>
+          <div class="text-[10px] font-mono text-stone-500">Yield Soft</div>
+        </div>
+      </div>
+
+      <div class="h-6 w-px bg-stone-200 dark:bg-stone-800"></div>
+
+      <!-- FII / DII Net Flow -->
+      <div class="flex items-center space-x-2.5">
+        <div>
+          <div class="text-[10px] font-mono text-stone-500 uppercase tracking-wider">FII / DII Flow (Prov)</div>
+          <div class="text-xs font-mono font-bold tabular-nums">
+            <span id="ticker-fii-val" class="text-rose-600">-₹2,140 Cr</span> / <span id="ticker-dii-val" class="text-emerald-600">+₹3,480 Cr</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Quick Filter / In-Edition Search Strip -->
+  <div class="border-b border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-900/60 py-2">
+    <div class="max-w-7xl mx-auto px-4 flex flex-wrap items-center justify-between gap-3 text-xs">
+      <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+        <span class="text-stone-500 font-mono uppercase text-[10px] mr-1">Filter:</span>
+        <button onclick="filterBriefing('all')" class="filter-pill px-2.5 py-1 rounded-full border border-stone-300 dark:border-stone-700 bg-stone-900 text-white dark:bg-stone-100 dark:text-stone-900 font-medium">All Pulse</button>
+        <button onclick="filterBriefing('macro')" class="filter-pill px-2.5 py-1 rounded-full border border-stone-200 dark:border-stone-700 hover:bg-stone-200 dark:hover:bg-stone-800 font-medium text-stone-600 dark:text-stone-300">Macro & RBI</button>
+        <button onclick="filterBriefing('deepdive')" class="filter-pill px-2.5 py-1 rounded-full border border-stone-200 dark:border-stone-700 hover:bg-stone-200 dark:hover:bg-stone-800 font-medium text-stone-600 dark:text-stone-300">Deep Dive Feature</button>
+        <button onclick="filterBriefing('earnings')" class="filter-pill px-2.5 py-1 rounded-full border border-stone-200 dark:border-stone-700 hover:bg-stone-200 dark:hover:bg-stone-800 font-medium text-stone-600 dark:text-stone-300">Corporate & Earnings</button>
+        <button onclick="filterBriefing('flows')" class="filter-pill px-2.5 py-1 rounded-full border border-stone-200 dark:border-stone-700 hover:bg-stone-200 dark:hover:bg-stone-800 font-medium text-stone-600 dark:text-stone-300">Institutional F&O</button>
+      </div>
+
+      <div class="relative w-full sm:w-64">
+        <input id="brief-search" type="text" onkeyup="handleSearch(this.value)" placeholder="Search tickers, keywords (e.g. ETF, HDFC)..." class="w-full text-xs font-mono bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-md py-1 pl-7 pr-3 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-1 focus:ring-stone-400">
+        <i data-lucide="search" class="w-3.5 h-3.5 absolute left-2 top-2 text-stone-400"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Primary Two-Column Editorial Layout -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+      <!-- LEFT SIDEBAR: Sticky Table of Contents & Brief Navigation -->
+      <aside class="lg:col-span-3 lg:sticky lg:top-8 order-2 lg:order-1">
+        <div class="bg-white dark:bg-stone-900/80 border border-stone-200 dark:border-stone-800 rounded-lg p-5 shadow-sm">
+          <div class="text-[11px] font-mono uppercase tracking-widest text-stone-400 pb-2 border-b border-stone-200 dark:border-stone-800 flex items-center justify-between">
+            <span>INDEX OF BRIEFS</span>
+            <span class="text-crimson font-bold">OCT 26</span>
+          </div>
+
+          <nav id="toc-nav" class="mt-3 space-y-1.5 text-xs font-medium">
+            <a href="#sec-pulse" class="toc-link group flex items-start p-2 rounded hover:bg-stone-100 dark:hover:bg-stone-800 transition text-stone-600 dark:text-stone-400">
+              <span class="font-mono text-[10px] text-stone-400 group-hover:text-crimson mr-2 mt-0.5">01</span>
+              <span>Equities & Sector Pulse</span>
+            </a>
+            <a href="#sec-macro" class="toc-link group flex items-start p-2 rounded hover:bg-stone-100 dark:hover:bg-stone-800 transition text-stone-600 dark:text-stone-400">
+              <span class="font-mono text-[10px] text-stone-400 group-hover:text-crimson mr-2 mt-0.5">02</span>
+              <span>Macro View & RBI Liquidity</span>
+            </a>
+            <a href="#sec-deepdive" class="toc-link group flex items-start p-2 rounded hover:bg-stone-100 dark:hover:bg-stone-800 transition text-stone-600 dark:text-stone-400">
+              <span class="font-mono text-[10px] text-stone-400 group-hover:text-crimson mr-2 mt-0.5">03</span>
+              <span class="font-semibold text-stone-900 dark:text-stone-100">Deep Dive: ETF NAV Disconnect</span>
+            </a>
+            <a href="#sec-earnings" class="toc-link group flex items-start p-2 rounded hover:bg-stone-100 dark:hover:bg-stone-800 transition text-stone-600 dark:text-stone-400">
+              <span class="font-mono text-[10px] text-stone-400 group-hover:text-crimson mr-2 mt-0.5">04</span>
+              <span>Corporate Action & Q2 FY27</span>
+            </a>
+            <a href="#sec-flows" class="toc-link group flex items-start p-2 rounded hover:bg-stone-100 dark:hover:bg-stone-800 transition text-stone-600 dark:text-stone-400">
+              <span class="font-mono text-[10px] text-stone-400 group-hover:text-crimson mr-2 mt-0.5">05</span>
+              <span>Institutional Flow & F&O Data</span>
+            </a>
+            <a href="#sec-chatter" class="toc-link group flex items-start p-2 rounded hover:bg-stone-100 dark:hover:bg-stone-800 transition text-stone-600 dark:text-stone-400">
+              <span class="font-mono text-[10px] text-stone-400 group-hover:text-crimson mr-2 mt-0.5">06</span>
+              <span>Executive Chatter & Insiders</span>
+            </a>
+            <a href="#sec-radar" class="toc-link group flex items-start p-2 rounded hover:bg-stone-100 dark:hover:bg-stone-800 transition text-stone-600 dark:text-stone-400">
+              <span class="font-mono text-[10px] text-stone-400 group-hover:text-crimson mr-2 mt-0.5">07</span>
+              <span>Regulatory Radar & Market Quiz</span>
+            </a>
+          </nav>
+
+          <!-- Bookmarked Items Drawer -->
+          <div class="mt-6 pt-4 border-t border-stone-200 dark:border-stone-800">
+            <div class="flex items-center justify-between text-[11px] font-mono text-stone-500 uppercase">
+              <span>Saved Highlights</span>
+              <span id="saved-count" class="font-bold text-crimson">0</span>
+            </div>
+            <div id="saved-list" class="mt-2 text-[11px] text-stone-500 italic">
+              Click bookmark on any section to pin for evening recap.
+            </div>
+          </div>
+
+          <!-- Fast Subscribe Card -->
+          <div class="mt-6 bg-stone-100 dark:bg-stone-800/80 p-3.5 rounded border border-stone-200 dark:border-stone-700 text-xs">
+            <div class="font-serif font-bold text-stone-900 dark:text-stone-100 mb-1">Receive at 7:30 AM Daily</div>
+            <p class="text-[11px] text-stone-600 dark:text-stone-400 mb-2.5 leading-relaxed">No PR spin, only actionable data from SEBI filings, RBI balance sheets, and derivative books.</p>
+            <form onsubmit="handleQuickSubscribe(event)" class="space-y-2">
+              <input type="email" required placeholder="name@institution.com" class="w-full text-xs px-2.5 py-1.5 rounded bg-white dark:bg-stone-900 border border-stone-300 dark:border-stone-700 focus:outline-none">
+              <button type="submit" class="w-full bg-crimson hover:bg-crimson-dark text-white font-medium py-1.5 rounded transition text-xs">Subscribe Free</button>
+            </form>
+          </div>
+        </div>
+      </aside>
+
+      <!-- RIGHT COLUMN: Core Fact-Dense Editorial Content -->
+      <article id="article-body" class="lg:col-span-9 space-y-12 order-1 lg:order-2">
+
+        <!-- Dynamic Live-Scraped Feed Container (Shown when user pulls live external edition) -->
+        <div id="live-scraped-container" class="hidden bg-amber-50/70 dark:bg-stone-900 border-2 border-crimson rounded-lg p-6 shadow-md">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-stone-300 dark:border-stone-700 pb-3 mb-5">
+            <div class="flex items-center space-x-2">
+              <span class="px-2 py-0.5 bg-crimson text-white font-mono text-xs font-bold rounded uppercase">LIVE SYNCED SOURCE</span>
+              <span id="scraped-source-url" class="text-xs font-mono text-stone-500 truncate max-w-md">https://fin.preparoo.app/daystarter-october-23-2026</span>
+            </div>
+            <button onclick="hideLiveScrapedFeed()" class="text-xs font-mono text-stone-500 hover:text-crimson">
+              [Hide Live Feed]
+            </button>
+          </div>
+          <div id="live-scraped-content" class="space-y-6 font-serif text-stone-800 dark:text-stone-200 leading-relaxed">
+            <!-- Populated dynamically via Live Scraper or Raw Paste -->
+          </div>
+        </div>
+
+        <!-- Executive Summary / Lead Opener -->
+        <div class="bg-white dark:bg-stone-900/90 border-l-4 border-crimson p-6 rounded-r-lg shadow-sm border-t border-r border-b border-stone-200 dark:border-stone-800">
+          <div class="flex items-center justify-between text-xs font-mono text-stone-500 mb-2">
+            <span>MORNING & EVENING THESIS · 3 MIN SKIM</span>
+            <button onclick="bookmarkSection('thesis', 'Morning Thesis Summary')" class="hover:text-crimson text-stone-400" title="Bookmark Section">
+              <i data-lucide="bookmark" class="w-4 h-4"></i>
+            </button>
+          </div>
+          <h2 id="lead-headline" class="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-stone-950 dark:text-stone-50 leading-snug mb-3">
+            Domestic Mutual Funds Out-Muscle FII Outflows as Repo Rate Neutrality Anchors INR
+          </h2>
+          <p id="lead-summary" class="font-serif text-stone-700 dark:text-stone-300 text-base sm:text-lg leading-relaxed mb-4">
+            India enters the final week of October 2026 with an unprecedented divergence: Foreign Institutional Investors have liquidated <span class="font-mono font-bold text-rose-600 dark:text-rose-400">₹24,800 Crore</span> of cash equities month-to-date, yet Nifty hovers within 1.5% of its all-time high. Systematic Investment Plan (SIP) gross run-rates above ₹24,000 Crore/month have created a structural liquidity floor. Today's focal point shifts from geopolitical oil jitters to RBI's liquidity absorption window and extreme disconnects in overseas tech ETFs listed in Mumbai.
+          </p>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 border-t border-stone-200 dark:border-stone-800 text-xs font-mono">
+            <div>
+              <span class="text-stone-500">1. Domestic Counterweight:</span>
+              <div id="thesis-stat-1" class="font-semibold text-emerald-600 dark:text-emerald-400">DII net buy: +₹38,200 Cr MTD</div>
+            </div>
+            <div>
+              <span class="text-stone-500">2. Systemic Liquidity:</span>
+              <div id="thesis-stat-2" class="font-semibold">₹1.84 Trillion Surplus (RBI TREPS)</div>
+            </div>
+            <div>
+              <span class="text-stone-500">3. Primary Risk Vector:</span>
+              <div id="thesis-stat-3" class="font-semibold text-market-amber">Global ETF premiums > 18% over NAV</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 01: Equities & Sectoral Pulse -->
+        <section id="sec-pulse" class="brief-card bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-lg p-6 shadow-sm">
+          <div class="flex items-center justify-between border-b border-stone-200 dark:border-stone-800 pb-3 mb-5">
+            <div class="flex items-center space-x-2">
+              <span class="px-2 py-0.5 bg-stone-200 dark:bg-stone-800 font-mono text-xs font-bold rounded">01</span>
+              <h3 class="font-serif text-xl sm:text-2xl font-bold">Equities & Sectoral Pulse</h3>
+            </div>
+            <button onclick="bookmarkSection('sec-pulse', '01 Equities & Sector Pulse')" class="text-stone-400 hover:text-crimson">
+              <i data-lucide="bookmark" class="w-4 h-4"></i>
+            </button>
+          </div>
+
+          <p class="font-serif text-stone-700 dark:text-stone-300 leading-relaxed mb-6">
+            Broader market breadth remains constructive, led by defensive rotation into Pharma and strong capex execution in Power & Utilities. Heavyweight IT shows stabilization after Accenture and Tier-1 Indian tech commentary hinted at early AI discretionary pipeline recovery.
+          </p>
+
+          <!-- High Density Performance Table -->
+          <div class="overflow-x-auto border border-stone-200 dark:border-stone-800 rounded mb-6">
+            <table class="w-full text-left text-xs font-mono border-collapse">
+              <thead>
+                <tr class="bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 uppercase tracking-wider text-[11px] border-b border-stone-200 dark:border-stone-700">
+                  <th class="p-3">Index / Benchmark</th>
+                  <th class="p-3 text-right">LTP (Close)</th>
+                  <th class="p-3 text-right">1D %</th>
+                  <th class="p-3 text-right">5D %</th>
+                  <th class="p-3 text-right">20D %</th>
+                  <th class="p-3 text-right">YTD %</th>
+                  <th class="p-3 text-center">Trend Signal</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-stone-200 dark:divide-stone-800 tabular-nums">
+                <tr class="hover:bg-stone-50 dark:hover:bg-stone-800/50">
+                  <td class="p-3 font-semibold font-sans">Nifty 50</td>
+                  <td class="p-3 text-right font-medium">26,136.40</td>
+                  <td class="p-3 text-right text-emerald-600 font-bold">+0.38%</td>
+                  <td class="p-3 text-right text-emerald-600">+1.12%</td>
+                  <td class="p-3 text-right text-rose-600">-0.45%</td>
+                  <td class="p-3 text-right text-emerald-600 font-bold">+18.4%</td>
+                  <td class="p-3 text-center"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 text-[10px]">Bull Consolidation</span></td>
+                </tr>
+                <tr class="hover:bg-stone-50 dark:hover:bg-stone-800/50">
+                  <td class="p-3 font-semibold font-sans">Nifty Midcap 150</td>
+                  <td class="p-3 text-right font-medium">21,490.80</td>
+                  <td class="p-3 text-right text-emerald-600 font-bold">+0.62%</td>
+                  <td class="p-3 text-right text-emerald-600">+2.40%</td>
+                  <td class="p-3 text-right text-emerald-600">+1.80%</td>
+                  <td class="p-3 text-right text-emerald-600 font-bold">+26.9%</td>
+                  <td class="p-3 text-center"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 text-[10px]">Strong Momentum</span></td>
+                </tr>
+                <tr class="hover:bg-stone-50 dark:hover:bg-stone-800/50">
+                  <td class="p-3 font-semibold font-sans">Nifty Smallcap 250</td>
+                  <td class="p-3 text-right font-medium">18,340.25</td>
+                  <td class="p-3 text-right text-emerald-600 font-bold">+0.85%</td>
+                  <td class="p-3 text-right text-emerald-600">+2.95%</td>
+                  <td class="p-3 text-right text-emerald-600">+3.10%</td>
+                  <td class="p-3 text-right text-emerald-600 font-bold">+31.2%</td>
+                  <td class="p-3 text-center"><span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 text-[10px]">Overheated / High PE</span></td>
+                </tr>
+                <tr class="hover:bg-stone-50 dark:hover:bg-stone-800/50">
+                  <td class="p-3 font-semibold font-sans">Nifty IT</td>
+                  <td class="p-3 text-right font-medium">42,910.10</td>
+                  <td class="p-3 text-right text-emerald-600 font-bold">+1.24%</td>
+                  <td class="p-3 text-right text-emerald-600">+3.15%</td>
+                  <td class="p-3 text-right text-emerald-600">+2.40%</td>
+                  <td class="p-3 text-right text-emerald-600 font-bold">+21.0%</td>
+                  <td class="p-3 text-center"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 text-[10px]">Accumulation</span></td>
+                </tr>
+                <tr class="hover:bg-stone-50 dark:hover:bg-stone-800/50">
+                  <td class="p-3 font-semibold font-sans">Nifty PSU Bank</td>
+                  <td class="p-3 text-right font-medium">6,840.40</td>
+                  <td class="p-3 text-right text-rose-600 font-bold">-0.72%</td>
+                  <td class="p-3 text-right text-rose-600">-1.40%</td>
+                  <td class="p-3 text-right text-rose-600">-3.20%</td>
+                  <td class="p-3 text-right text-emerald-600 font-bold">+14.1%</td>
+                  <td class="p-3 text-center"><span class="px-2 py-0.5 rounded bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-300 text-[10px]">NIM Compression</span></td>
+                </tr>
+                <tr class="hover:bg-stone-50 dark:hover:bg-stone-800/50">
+                  <td class="p-3 font-semibold font-sans">Nifty Auto</td>
+                  <td class="p-3 text-right font-medium">25,890.30</td>
+                  <td class="p-3 text-right text-rose-600 font-bold">-0.34%</td>
+                  <td class="p-3 text-right text-emerald-600">+0.80%</td>
+                  <td class="p-3 text-right text-emerald-600">+1.10%</td>
+                  <td class="p-3 text-right text-emerald-600 font-bold">+38.5%</td>
+                  <td class="p-3 text-center"><span class="px-2 py-0.5 rounded bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-300 text-[10px]">Festive Inventory Watch</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Sector Drivers Callout -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div class="p-3 bg-stone-50 dark:bg-stone-800/40 rounded border border-stone-200 dark:border-stone-800">
+              <span class="font-mono font-bold text-emerald-600 uppercase">Sector Bull Vector: Energy & Power</span>
+              <p class="mt-1 font-serif text-stone-600 dark:text-stone-400">Peak national power demand clocked 242 GW during unseasonal post-monsoon heat. NTPC, Tata Power, and Power Grid report record PLFs (Plant Load Factors) exceeding 74%.</p>
+            </div>
+            <div class="p-3 bg-stone-50 dark:bg-stone-800/40 rounded border border-stone-200 dark:border-stone-800">
+              <span class="font-mono font-bold text-rose-600 uppercase">Sector Bear Vector: Private Banks</span>
+              <p class="mt-1 font-serif text-stone-600 dark:text-stone-400">Credit-Deposit (C/D) ratios stubbornly above 84% continue to push deposit pricing higher. CASA share has slipped to 37.8% across top 4 lenders.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 02: Macro View & RBI Liquidity -->
+        <section id="sec-macro" class="brief-card bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-lg p-6 shadow-sm">
+          <div class="flex items-center justify-between border-b border-stone-200 dark:border-stone-800 pb-3 mb-5">
+            <div class="flex items-center space-x-2">
+              <span class="px-2 py-0.5 bg-stone-200 dark:bg-stone-800 font-mono text-xs font-bold rounded">02</span>
+              <h3 class="font-serif text-xl sm:text-2xl font-bold">The Macro View & RBI Liquidity Balance</h3>
+            </div>
+            <button onclick="bookmarkSection('sec-macro', '02 Macro & RBI Liquidity')" class="text-stone-400 hover:text-crimson">
+              <i data-lucide="bookmark" class="w-4 h-4"></i>
+            </button>
+          </div>
+
+          <p class="font-serif text-stone-700 dark:text-stone-300 leading-relaxed mb-6">
+            The Reserve Bank of India maintains its neutral stance with the policy repo rate pegged at <strong class="text-stone-900 dark:text-stone-100 font-mono">6.50%</strong>. Systemic liquidity has swung into a persistent surplus of ₹1.84 Trillion following increased government expenditures ahead of state assemblies and targeted FX interventions by the central bank to defend the ₹84.15 ceiling against relentless dollar strength.
+          </p>
+
+          <!-- Visual Macro Infographic Exhibit -->
+          <div class="bg-stone-50 dark:bg-stone-800/50 p-4 rounded-lg border border-stone-200 dark:border-stone-700 mb-6">
+            <div class="flex items-center justify-between mb-3 text-xs font-mono">
+              <span class="font-bold text-stone-700 dark:text-stone-300">EXHIBIT 1: RBI LIQUIDITY TRANSMISSION & MONEY MARKET RATES</span>
+              <span class="text-stone-500">Source: RBI DBIE / CCIL Data</span>
+            </div>
+
+            <!-- CSS Grid Bar Simulation -->
+            <div class="space-y-3 pt-2">
+              <div>
+                <div class="flex justify-between text-xs font-mono mb-1">
+                  <span>Marginal Standing Facility (MSF Rate)</span>
+                  <span class="font-bold">6.75%</span>
+                </div>
+                <div class="w-full bg-stone-200 dark:bg-stone-700 h-2.5 rounded-full overflow-hidden">
+                  <div class="bg-rose-500 h-full rounded-full" style="width: 85%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-xs font-mono mb-1">
+                  <span>Policy Repo Rate (Reference Anchor)</span>
+                  <span class="font-bold">6.50%</span>
+                </div>
+                <div class="w-full bg-stone-200 dark:bg-stone-700 h-2.5 rounded-full overflow-hidden">
+                  <div class="bg-stone-900 dark:bg-stone-100 h-full rounded-full" style="width: 80%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-xs font-mono mb-1">
+                  <span>Weighted Average Call Rate (WACR - Market Realized)</span>
+                  <span class="font-bold text-emerald-600 dark:text-emerald-400">6.42% (Trading 8 bps below repo)</span>
+                </div>
+                <div class="w-full bg-stone-200 dark:bg-stone-700 h-2.5 rounded-full overflow-hidden">
+                  <div class="bg-emerald-600 h-full rounded-full" style="width: 78%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-xs font-mono mb-1">
+                  <span>Standing Deposit Facility (SDF - Floor)</span>
+                  <span class="font-bold">6.25%</span>
+                </div>
+                <div class="w-full bg-stone-200 dark:bg-stone-700 h-2.5 rounded-full overflow-hidden">
+                  <div class="bg-stone-400 h-full rounded-full" style="width: 74%"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4 p-3 bg-white dark:bg-stone-900 rounded border border-stone-200 dark:border-stone-800 text-xs font-mono text-stone-600 dark:text-stone-400">
+              <span class="text-crimson font-bold">ANALYST NOTE:</span> WACR slipping below the Repo Rate signals that banking system cash is ample. Treasury desks are deploying surplus in 91-day T-Bills at 6.44%, meaning credit off-take is pacing slower than deposit mobilizations for the first time in 7 quarters.
+            </div>
+          </div>
+
+          <!-- Key Macro Stat Tiles -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center font-mono">
+            <div class="p-3 bg-stone-50 dark:bg-stone-800/40 rounded border border-stone-200 dark:border-stone-800">
+              <div class="text-[10px] text-stone-500 uppercase">CPI Inflation</div>
+              <div class="text-base font-bold text-stone-900 dark:text-stone-100">5.49%</div>
+              <div class="text-[10px] text-amber-600">Vegetable Volatility</div>
+            </div>
+            <div class="p-3 bg-stone-50 dark:bg-stone-800/40 rounded border border-stone-200 dark:border-stone-800">
+              <div class="text-[10px] text-stone-500 uppercase">Core CPI (Ex-Food/Fuel)</div>
+              <div class="text-base font-bold text-emerald-600">3.50%</div>
+              <div class="text-[10px] text-stone-500">Record Softness</div>
+            </div>
+            <div class="p-3 bg-stone-50 dark:bg-stone-800/40 rounded border border-stone-200 dark:border-stone-800">
+              <div class="text-[10px] text-stone-500 uppercase">FX Reserves</div>
+              <div class="text-base font-bold text-stone-900 dark:text-stone-100">$698.4B</div>
+              <div class="text-[10px] text-stone-500">11.4 Months Cover</div>
+            </div>
+            <div class="p-3 bg-stone-50 dark:bg-stone-800/40 rounded border border-stone-200 dark:border-stone-800">
+              <div class="text-[10px] text-stone-500 uppercase">GST Gross Run Rate</div>
+              <div class="text-base font-bold text-stone-900 dark:text-stone-100">₹1.78 Lakh Cr</div>
+              <div class="text-[10px] text-emerald-600">+8.9% YoY</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 03: DEEP DIVE FEATURE STORY (The Preparoo DayStarter centerpiece) -->
+        <section id="sec-deepdive" class="brief-card bg-stone-50/70 dark:bg-stone-900 border-2 border-stone-300 dark:border-stone-700 rounded-lg p-6 sm:p-8 shadow-sm">
+          <div class="flex items-center justify-between border-b border-stone-300 dark:border-stone-700 pb-3 mb-6">
+            <div class="flex items-center space-x-2">
+              <span class="px-2 py-0.5 bg-crimson text-white font-mono text-xs font-bold rounded tracking-wider uppercase">DEEP DIVE FEATURE</span>
+              <span class="text-xs font-mono text-stone-500">7-min read</span>
+            </div>
+            <button onclick="bookmarkSection('sec-deepdive', '03 Deep Dive: ETF NAV Disconnect')" class="text-stone-400 hover:text-crimson">
+              <i data-lucide="bookmark" class="w-4 h-4"></i>
+            </button>
+          </div>
+
+          <h2 id="deepdive-title" class="font-serif text-2xl sm:text-4xl font-bold tracking-tight text-stone-950 dark:text-stone-50 leading-tight mb-4">
+            When Price Leaves NAV Behind: The Dangerous 18% Premium in India’s Global Tech ETFs
+          </h2>
+
+          <div class="flex items-center gap-3 text-xs font-mono text-stone-500 mb-6 border-b border-stone-200 dark:border-stone-800 pb-4">
+            <span>By Analytical Bureau</span>
+            <span>·</span>
+            <span id="deepdive-subtitle">Focus: SEBI $7 Billion Overseas Cap & Retail Arbitrage Trap</span>
+          </div>
+
+          <div id="deepdive-body-top" class="font-serif text-stone-800 dark:text-stone-200 text-base sm:text-lg leading-relaxed space-y-5">
+            <p>
+              An escalating structural distortion has taken root across the National Stock Exchange (NSE) and Bombay Stock Exchange (BSE). Due to the decade-old <strong class="text-stone-950 dark:text-stone-100 font-semibold">$7-billion regulatory industry limit</strong> imposed by the Reserve Bank of India on domestic mutual funds investing abroad, Indian asset managers have been legally barred from issuing new ETF creation units in overseas tech strategies for months.
+            </p>
+            <p>
+              The consequence? When domestic retail investors rush to buy US mega-cap technology and semiconductor shares via local demat accounts, <em class="italic">Authorised Participants (APs) cannot create fresh ETF units to arbitrage the price down to fair value</em>. The ETFs have effectively transformed into closed-end funds trading under severe structural rationing.
+            </p>
+          </div>
+
+          <!-- Exhibit 2: ETF Disconnect Interactive Table -->
+          <div class="my-7 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-lg p-5">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+              <div class="font-mono text-xs font-bold uppercase tracking-wider text-stone-800 dark:text-stone-200">
+                EXHIBIT 2: MARKET PRICE VS. INDICATIVE INAV (LIVE OCTOBER 2026 AUDIT)
+              </div>
+              <span class="text-[10px] font-mono text-crimson font-semibold">● Severe Dislocation Warning</span>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-xs font-mono border-collapse">
+                <thead>
+                  <tr class="bg-stone-100 dark:bg-stone-900 text-stone-600 dark:text-stone-400 border-b border-stone-200 dark:border-stone-700 text-left">
+                    <th class="p-2.5">ETF Ticker / Scheme</th>
+                    <th class="p-2.5">Target Benchmark</th>
+                    <th class="p-2.5 text-right">NSE Closing Price</th>
+                    <th class="p-2.5 text-right">Real-Time iNAV</th>
+                    <th class="p-2.5 text-right">Premium / (Discount)</th>
+                    <th class="p-2.5 text-center">Creation Status</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-stone-200 dark:divide-stone-700 tabular-nums">
+                  <tr class="hover:bg-stone-50 dark:hover:bg-stone-700/50">
+                    <td class="p-2.5 font-bold font-sans">MON100 (Motilal Oswal)</td>
+                    <td class="p-2.5 text-stone-600 dark:text-stone-400">Nasdaq 100 Index</td>
+                    <td class="p-2.5 text-right font-semibold">₹178.40</td>
+                    <td class="p-2.5 text-right text-stone-500">₹159.20</td>
+                    <td class="p-2.5 text-right text-rose-600 font-bold">+12.06%</td>
+                    <td class="p-2.5 text-center"><span class="px-2 py-0.5 rounded bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 text-[10px]">Hard Frozen</span></td>
+                  </tr>
+                  <tr class="hover:bg-stone-50 dark:hover:bg-stone-700/50">
+                    <td class="p-2.5 font-bold font-sans">MAFANG (Mirae Asset)</td>
+                    <td class="p-2.5 text-stone-600 dark:text-stone-400">NYSE FANG+ Index</td>
+                    <td class="p-2.5 text-right font-semibold">₹104.15</td>
+                    <td class="p-2.5 text-right text-stone-500">₹87.80</td>
+                    <td class="p-2.5 text-right text-rose-600 font-bold">+18.62%</td>
+                    <td class="p-2.5 text-center"><span class="px-2 py-0.5 rounded bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 text-[10px]">Hard Frozen</span></td>
+                  </tr>
+                  <tr class="hover:bg-stone-50 dark:hover:bg-stone-700/50">
+                    <td class="p-2.5 font-bold font-sans">HNDF (HDFC Developed World)</td>
+                    <td class="p-2.5 text-stone-600 dark:text-stone-400">MSCI World Index</td>
+                    <td class="p-2.5 text-right font-semibold">₹29.30</td>
+                    <td class="p-2.5 text-right text-stone-500">₹27.90</td>
+                    <td class="p-2.5 text-right text-amber-600 font-bold">+5.01%</td>
+                    <td class="p-2.5 text-center"><span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 text-[10px]">Restricted</span></td>
+                  </tr>
+                  <tr class="hover:bg-stone-50 dark:hover:bg-stone-700/50">
+                    <td class="p-2.5 font-bold font-sans">NIFTYBEES (Benchmark)</td>
+                    <td class="p-2.5 text-stone-600 dark:text-stone-400">Nifty 50 Index (Domestic)</td>
+                    <td class="p-2.5 text-right font-semibold">₹287.42</td>
+                    <td class="p-2.5 text-right text-stone-500">₹287.38</td>
+                    <td class="p-2.5 text-right text-emerald-600 font-bold">+0.01%</td>
+                    <td class="p-2.5 text-center"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 text-[10px]">Normal Arb Active</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Interactive Premium Simulator -->
+            <div class="mt-4 pt-4 border-t border-stone-200 dark:border-stone-700 text-xs">
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-semibold text-stone-700 dark:text-stone-300">Test Your Exposure Risk (NAV Compression Calculator):</span>
+                <span id="calc-result" class="font-mono font-bold text-rose-600">Immediate downside if RBI raises cap: -15.7%</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <label class="text-[11px] font-mono text-stone-500">Select Holding:</label>
+                <select id="etf-calc-select" onchange="updateEtfCalculator()" class="font-mono text-xs p-1 rounded bg-stone-100 dark:bg-stone-900 border border-stone-300 dark:border-stone-700">
+                  <option value="18.62">MAFANG (18.62% Premium)</option>
+                  <option value="12.06">MON100 (12.06% Premium)</option>
+                  <option value="5.01">HNDF (5.01% Premium)</option>
+                </select>
+                <span class="text-[11px] text-stone-500 font-sans">If SEBI/RBI increases the industry limit to $10B, APs will flood creation units, extinguishing this entire premium overnight.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="font-serif text-stone-800 dark:text-stone-200 text-base sm:text-lg leading-relaxed space-y-4">
+            <h4 class="font-sans font-bold text-base text-stone-950 dark:text-stone-50 tracking-normal uppercase">
+              The Regulatory Reckoning
+            </h4>
+            <p>
+              SEBI has reportedly written to North Block and the RBI requesting a phased recalibration of the overseas ceiling to accommodate the <span class="font-mono font-bold">₹75,000 Crore</span> of domestic wealth seeking global geographic diversification.
+            </p>
+            <p>
+              Until the RBI yields, retail buyers purchasing MAFANG or MON100 at these market levels are effectively buying a derivative at an 18% surcharge above fair liquidation value. When the policy gate eventually unlocks, the price crash toward actual NAV will be sudden and unhedged.
+            </p>
+          </div>
+        </section>
+
+        <!-- SECTION 04: Corporate Action, Earnings & Order Books -->
+        <section id="sec-earnings" class="brief-card bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-lg p-6 shadow-sm">
+          <div class="flex items-center justify-between border-b border-stone-200 dark:border-stone-800 pb-3 mb-5">
+            <div class="flex items-center space-x-2">
+              <span class="px-2 py-0.5 bg-stone-200 dark:bg-stone-800 font-mono text-xs font-bold rounded">04</span>
+              <h3 class="font-serif text-xl sm:text-2xl font-bold">Corporate Action, Earnings & Order Books</h3>
+            </div>
+            <button onclick="bookmarkSection('sec-earnings', '04 Corporate & Earnings')" class="text-stone-400 hover:text-crimson">
+              <i data-lucide="bookmark" class="w-4 h-4"></i>
+            </button>
+          </div>
+
+          <p class="font-serif text-stone-700 dark:text-stone-300 leading-relaxed mb-6">
+            Q2 FY27 earnings season highlights a divergence between manufacturing/infrastructure order execution (which continues to report record margin resilience) and urban FMCG consumption volume deceleration.
+          </p>
+
+          <!-- Earnings Breakdown Cards -->
+          <div class="space-y-4">
+            
+            <!-- Reliance Industries -->
+            <div class="border border-stone-200 dark:border-stone-800 rounded-lg p-4 bg-stone-50/50 dark:bg-stone-800/30">
+              <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-stone-200 dark:border-stone-800">
+                <div class="flex items-center space-x-2">
+                  <span class="font-mono font-bold text-sm">RELIANCE (Reliance Industries)</span>
+                  <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-stone-200 dark:bg-stone-700">Q2 FY27 Review</span>
+                </div>
+                <div class="font-mono text-xs font-semibold text-emerald-600">Consolidated EBITDA: ₹43,940 Cr (+4.2% YoY)</div>
+              </div>
+              <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                <div>
+                  <div class="text-[10px] font-mono text-stone-500 uppercase">Jio Infocomm ARPU</div>
+                  <div class="font-bold text-stone-800 dark:text-stone-200 font-mono mt-0.5">₹195.1 / month</div>
+                  <div class="text-[10px] text-stone-500">Tariff hike fully absorbed; 5G monetization ramped.</div>
+                </div>
+                <div>
+                  <div class="text-[10px] font-mono text-stone-500 uppercase">Retail Footprint</div>
+                  <div class="font-bold text-stone-800 dark:text-stone-200 font-mono mt-0.5">18,940 Total Stores</div>
+                  <div class="text-[10px] text-stone-500">Footfalls up 14% YoY; quick-commerce drag moderated.</div>
+                </div>
+                <div>
+                  <div class="text-[10px] font-mono text-stone-500 uppercase">O2C Refining Margin</div>
+                  <div class="font-bold text-stone-800 dark:text-stone-200 font-mono mt-0.5">$8.80 / bbl</div>
+                  <div class="text-[10px] text-stone-500">Diesel cracks stabilized; petchem margins remain subdued.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- HDFC Bank -->
+            <div class="border border-stone-200 dark:border-stone-800 rounded-lg p-4 bg-stone-50/50 dark:bg-stone-800/30">
+              <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-stone-200 dark:border-stone-800">
+                <div class="flex items-center space-x-2">
+                  <span class="font-mono font-bold text-sm">HDFCBANK (HDFC Bank Ltd.)</span>
+                  <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-stone-200 dark:bg-stone-700">Balance Sheet Realignment</span>
+                </div>
+                <div class="font-mono text-xs font-semibold text-emerald-600">Net Profit: ₹16,820 Cr (+5.3% YoY)</div>
+              </div>
+              <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                <div>
+                  <div class="text-[10px] font-mono text-stone-500 uppercase">Gross NPA / Net NPA</div>
+                  <div class="font-bold text-stone-800 dark:text-stone-200 font-mono mt-0.5">1.36% / 0.38%</div>
+                  <div class="text-[10px] text-emerald-600">Asset quality continues to lead large lenders.</div>
+                </div>
+                <div>
+                  <div class="text-[10px] font-mono text-stone-500 uppercase">Loan Growth vs Deposit Growth</div>
+                  <div class="font-bold text-stone-800 dark:text-stone-200 font-mono mt-0.5">+7.2% vs +15.1% YoY</div>
+                  <div class="text-[10px] text-stone-500">Deliberate credit slow-down to cure LDR to ~98%.</div>
+                </div>
+                <div>
+                  <div class="text-[10px] font-mono text-stone-500 uppercase">Net Interest Margin (NIM)</div>
+                  <div class="font-bold text-stone-800 dark:text-stone-200 font-mono mt-0.5">3.46% (Flat QoQ)</div>
+                  <div class="text-[10px] text-stone-500">Management guides NIM expansion by Q4 FY27.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- DLF & Real Estate Order Books -->
+            <div class="border border-stone-200 dark:border-stone-800 rounded-lg p-4 bg-stone-50/50 dark:bg-stone-800/30">
+              <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-stone-200 dark:border-stone-800">
+                <div class="flex items-center space-x-2">
+                  <span class="font-mono font-bold text-sm">DLF / GODREJPROP (Realty Radar)</span>
+                  <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">Luxury Pre-Sales Boom</span>
+                </div>
+                <div class="font-mono text-xs font-semibold text-emerald-600">Gurugram Phase-7: ₹6,200 Cr Sell-Out in 72 Hrs</div>
+              </div>
+              <p class="mt-2 text-xs font-serif text-stone-600 dark:text-stone-400">
+                Super-luxury ticket sizes (>₹12 Crore) show zero price resistance. DLF net cash balance improves to positive ₹2,900 Crore. Cash flows are being channeled into Mumbai Metropolitan Region (MMR) and Goa ultra-luxury land parcels.
+              </p>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- SECTION 05: Institutional Flow & Derivatives Positioning -->
+        <section id="sec-flows" class="brief-card bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-lg p-6 shadow-sm">
+          <div class="flex items-center justify-between border-b border-stone-200 dark:border-stone-800 pb-3 mb-5">
+            <div class="flex items-center space-x-2">
+              <span class="px-2 py-0.5 bg-stone-200 dark:bg-stone-800 font-mono text-xs font-bold rounded">05</span>
+              <h3 class="font-serif text-xl sm:text-2xl font-bold">Institutional Flow & Derivatives Positioning</h3>
+            </div>
+            <button onclick="bookmarkSection('sec-flows', '05 Institutional Flows & F&O')" class="text-stone-400 hover:text-crimson">
+              <i data-lucide="bookmark" class="w-4 h-4"></i>
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <!-- FII/DII Breakdown -->
+            <div class="border border-stone-200 dark:border-stone-800 p-4 rounded-lg bg-stone-50 dark:bg-stone-800/40">
+              <h4 class="font-mono text-xs font-bold uppercase tracking-wider text-stone-600 dark:text-stone-400 mb-3">
+                CASH MARKET FLOW MATRIX (LAST 5 SESSIONS)
+              </h4>
+              <div class="space-y-2 text-xs font-mono">
+                <div class="flex justify-between py-1 border-b border-stone-200 dark:border-stone-700">
+                  <span>Friday (Oct 23)</span>
+                  <span>FII: <strong class="text-rose-600">-₹2,140 Cr</strong> | DII: <strong class="text-emerald-600">+₹3,480 Cr</strong></span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-stone-200 dark:border-stone-700">
+                  <span>Thursday (Oct 22)</span>
+                  <span>FII: <strong class="text-rose-600">-₹1,860 Cr</strong> | DII: <strong class="text-emerald-600">+₹2,910 Cr</strong></span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-stone-200 dark:border-stone-700">
+                  <span>Wednesday (Oct 21)</span>
+                  <span>FII: <strong class="text-rose-600">-₹3,400 Cr</strong> | DII: <strong class="text-emerald-600">+₹4,120 Cr</strong></span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-stone-200 dark:border-stone-700">
+                  <span>Tuesday (Oct 20)</span>
+                  <span>FII: <strong class="text-emerald-600">+₹450 Cr</strong> | DII: <strong class="text-emerald-600">+₹1,800 Cr</strong></span>
+                </div>
+                <div class="flex justify-between py-1 pt-2 font-bold bg-white dark:bg-stone-900 px-2 rounded">
+                  <span>Net 5-Day Balance</span>
+                  <span class="text-emerald-600 font-mono">+₹5,380 Cr Domestic Net Absorption</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- F&O Heat Gauge -->
+            <div class="border border-stone-200 dark:border-stone-800 p-4 rounded-lg bg-stone-50 dark:bg-stone-800/40">
+              <h4 class="font-mono text-xs font-bold uppercase tracking-wider text-stone-600 dark:text-stone-400 mb-3">
+                DERIVATIVES SENTIMENT & OPEN INTEREST
+              </h4>
+              <div class="space-y-3 text-xs font-mono">
+                <div>
+                  <div class="flex justify-between mb-1">
+                    <span>Nifty 50 Put-Call Ratio (PCR)</span>
+                    <span class="font-bold text-emerald-600">1.18 (Mild Bullish Bias)</span>
+                  </div>
+                  <div class="w-full bg-stone-200 dark:bg-stone-700 h-2 rounded-full overflow-hidden">
+                    <div class="bg-emerald-600 h-full rounded-full" style="width: 62%"></div>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="flex justify-between mb-1">
+                    <span>FII Index Futures Net Long Exposure</span>
+                    <span class="font-bold text-rose-600">38.4% (Near Lower Bound)</span>
+                  </div>
+                  <div class="w-full bg-stone-200 dark:bg-stone-700 h-2 rounded-full overflow-hidden">
+                    <div class="bg-rose-500 h-full rounded-full" style="width: 38%"></div>
+                  </div>
+                </div>
+
+                <div class="pt-2 text-[11px] text-stone-600 dark:text-stone-400 font-sans border-t border-stone-200 dark:border-stone-700">
+                  <strong class="font-mono text-stone-900 dark:text-stone-100">Key Expiry Levels:</strong> Maximum Call open interest cluster sits at <strong class="font-mono">26,300</strong> (stiff hurdle); maximum Put open interest sits at <strong class="font-mono">26,000</strong> (robust support cushion).
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 06: Executive Chatter & Management Quotes -->
+        <section id="sec-chatter" class="brief-card bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-lg p-6 shadow-sm">
+          <div class="flex items-center justify-between border-b border-stone-200 dark:border-stone-800 pb-3 mb-5">
+            <div class="flex items-center space-x-2">
+              <span class="px-2 py-0.5 bg-stone-200 dark:bg-stone-800 font-mono text-xs font-bold rounded">06</span>
+              <h3 class="font-serif text-xl sm:text-2xl font-bold">Executive Chatter & Insider Realities</h3>
+            </div>
+            <button onclick="bookmarkSection('sec-chatter', '06 Executive Chatter')" class="text-stone-400 hover:text-crimson">
+              <i data-lucide="bookmark" class="w-4 h-4"></i>
+            </button>
+          </div>
+
+          <div class="space-y-4">
+            <!-- Quote 1 -->
+            <div class="p-4 bg-stone-50 dark:bg-stone-800/40 border-l-2 border-stone-400 dark:border-stone-600 rounded-r-lg">
+              <p class="font-serif italic text-base text-stone-800 dark:text-stone-200 mb-2">
+                "We cannot let headline inflation numbers fool our timeline. While core inflation is firmly anchored at 3.5%, any geopolitical supply disruption in fertilizer or fuel could swiftly bleed into food prices. We will not preemptively ease rates simply to mirror Western central banks."
+              </p>
+              <div class="flex items-center justify-between text-xs font-mono text-stone-500">
+                <span class="font-bold text-stone-700 dark:text-stone-300">Shaktikanta Das · Governor, Reserve Bank of India</span>
+                <span class="text-[10px] uppercase tracking-wider bg-stone-200 dark:bg-stone-700 px-2 py-0.5 rounded">MPC Minutes</span>
+              </div>
+            </div>
+
+            <!-- Quote 2 -->
+            <div class="p-4 bg-stone-50 dark:bg-stone-800/40 border-l-2 border-stone-400 dark:border-stone-600 rounded-r-lg">
+              <p class="font-serif italic text-base text-stone-800 dark:text-stone-200 mb-2">
+                "The urban Indian consumer is experiencing a momentary pause in discretionary FMCG baskets, but rural two-wheeler registrations and tractor sales are running 14% higher after an above-average monsoon replenishment of reservoir levels."
+              </p>
+              <div class="flex items-center justify-between text-xs font-mono text-stone-500">
+                <span class="font-bold text-stone-700 dark:text-stone-300">Sanjiv Mehta · Veteran FMCG Director</span>
+                <span class="text-[10px] uppercase tracking-wider bg-stone-200 dark:bg-stone-700 px-2 py-0.5 rounded">Industry Conclave</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 07: Ground Truth Checklist & Regulatory Radar -->
+        <section id="sec-radar" class="brief-card bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-lg p-6 shadow-sm">
+          <div class="flex items-center justify-between border-b border-stone-200 dark:border-stone-800 pb-3 mb-5">
+            <div class="flex items-center space-x-2">
+              <span class="px-2 py-0.5 bg-stone-200 dark:bg-stone-800 font-mono text-xs font-bold rounded">07</span>
+              <h3 class="font-serif text-xl sm:text-2xl font-bold">Ground Truth Checklist & SEBI Radar</h3>
+            </div>
+            <button onclick="bookmarkSection('sec-radar', '07 Regulatory Radar')" class="text-stone-400 hover:text-crimson">
+              <i data-lucide="bookmark" class="w-4 h-4"></i>
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div class="p-3 border border-stone-200 dark:border-stone-800 rounded bg-stone-50 dark:bg-stone-800/30">
+              <div class="flex items-center gap-2 mb-1">
+                <i data-lucide="shield-alert" class="w-4 h-4 text-market-amber"></i>
+                <span class="font-mono font-bold">New F&O Rules Take Effect Nov 20, 2026</span>
+              </div>
+              <p class="font-serif text-stone-600 dark:text-stone-400">
+                Minimum lot value increases to ₹15 Lakhs; single weekly contract per exchange to curb retail speculative churn. Broking houses prepare for an estimated 25% drop in intraday option trading volumes.
+              </p>
+            </div>
+
+            <div class="p-3 border border-stone-200 dark:border-stone-800 rounded bg-stone-50 dark:bg-stone-800/30">
+              <div class="flex items-center gap-2 mb-1">
+                <i data-lucide="scale" class="w-4 h-4 text-emerald-600"></i>
+                <span class="font-mono font-bold">T+0 Settlement Rollout Expansion</span>
+              </div>
+              <p class="font-serif text-stone-600 dark:text-stone-400">
+                SEBI expands optional instant settlement to top 500 scrips from 250 scrips, accelerating clearing corporation collateral turnover and boosting broker margins.
+              </p>
+            </div>
+          </div>
+
+          <!-- Interactive Market Truth Quiz -->
+          <div class="mt-8 pt-6 border-t border-stone-200 dark:border-stone-800">
+            <div class="flex items-center justify-between mb-3">
+              <h4 class="font-mono text-xs font-bold uppercase tracking-wider text-crimson flex items-center gap-1.5">
+                <i data-lucide="help-circle" class="w-4 h-4"></i>
+                DAILY MARKET TRUTH QUIZ · TEST YOUR REAL-TIME EDGE
+              </h4>
+              <span class="text-[10px] font-mono text-stone-500">CFA Level II Alignment</span>
+            </div>
+
+            <div id="quiz-container" class="bg-stone-50 dark:bg-stone-800/60 p-4 rounded-lg border border-stone-200 dark:border-stone-700 text-xs">
+              <p id="quiz-question-text" class="font-serif text-sm font-semibold text-stone-900 dark:text-stone-100 mb-3">
+                If an overseas ETF trades at an 18% market premium over its indicative NAV due to regulatory limits on AP unit creations, what is the most statistically probable outcome if the regulator expands the cap tomorrow?
+              </p>
+
+              <div class="space-y-2 font-mono">
+                <button onclick="checkAnswer(this, false)" class="quiz-opt w-full text-left p-2.5 rounded border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-900 hover:border-crimson transition flex items-center justify-between">
+                  <span id="quiz-opt-a">A) The ETF market price will surge another 18% due to inflows</span>
+                  <i data-lucide="circle" class="w-3.5 h-3.5 text-stone-400"></i>
+                </button>
+                <button onclick="checkAnswer(this, true)" class="quiz-opt w-full text-left p-2.5 rounded border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-900 hover:border-crimson transition flex items-center justify-between">
+                  <span id="quiz-opt-b">B) Arbitrageurs will create units and sell on exchange, collapsing market price toward NAV</span>
+                  <i data-lucide="circle" class="w-3.5 h-3.5 text-stone-400"></i>
+                </button>
+                <button onclick="checkAnswer(this, false)" class="quiz-opt w-full text-left p-2.5 rounded border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-900 hover:border-crimson transition flex items-center justify-between">
+                  <span id="quiz-opt-c">C) The underlying US tech stocks will drop by 18% to balance the equation</span>
+                  <i data-lucide="circle" class="w-3.5 h-3.5 text-stone-400"></i>
+                </button>
+              </div>
+
+              <div id="quiz-explanation" class="hidden mt-3 p-3 rounded bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-800 text-stone-800 dark:text-stone-200 font-sans text-xs">
+                <span class="font-mono font-bold text-emerald-700 dark:text-emerald-400">Correct!</span> When creation limits are lifted, Authorised Participants buy underlying foreign shares at NAV and create new ETF units to sell at the premium price, instantly compressing the market price back down to NAV.
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </article>
+    </div>
+  </main>
+
+  <!-- Editorial Colophon & Footer -->
+  <footer class="mt-16 border-t-2 border-stone-300 dark:border-stone-800 bg-white dark:bg-stone-950 py-12 text-stone-600 dark:text-stone-400 text-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8 font-serif">
+        <div class="md:col-span-2">
+          <div class="font-serif text-xl font-bold text-stone-900 dark:text-stone-100 mb-2">INDIAN MARKET TRUTHS</div>
+          <p class="leading-relaxed max-w-md">
+            Prepared every trading day prior to the 09:15 AM IST market bell. Designed for portfolio managers, family offices, proprietary traders, and discerning capital allocators.
+          </p>
+          <div class="mt-4 font-mono text-[11px] text-stone-500">
+            Data sources: NSE India, BSE, Reserve Bank of India DBIE, CCIL, SEBI Disclosures, Bloomberg LP.
+          </div>
+        </div>
+
+        <div class="font-sans">
+          <div class="font-mono text-[11px] uppercase tracking-wider text-stone-900 dark:text-stone-200 font-bold mb-3">EDITIONS & ARCHIVES</div>
+          <ul class="space-y-1.5 font-mono text-xs">
+            <li><a href="#" class="hover:text-crimson">October 23, 2026 (DayStarter)</a></li>
+            <li><a href="#" class="hover:text-crimson">October 22, 2026 (Weekly F&O)</a></li>
+            <li><a href="#" class="hover:text-crimson">October 21, 2026 (Banking NIMs)</a></li>
+            <li><a href="#" class="hover:text-crimson text-crimson font-semibold">View Full 2026 Archive →</a></li>
+          </ul>
+        </div>
+
+        <div class="font-sans">
+          <div class="font-mono text-[11px] uppercase tracking-wider text-stone-900 dark:text-stone-200 font-bold mb-3">STANDARDS & ETHICS</div>
+          <p class="text-[11px] leading-relaxed text-stone-500">
+            We do not accept paid analyst coverage, stock tipping retainers, or undisclosed sponsor arrangements. All data tables are audited against primary filings.
+          </p>
+        </div>
+      </div>
+
+      <div class="border-t border-stone-200 dark:border-stone-800 pt-6 flex flex-wrap items-center justify-between font-mono text-[11px] text-stone-500 gap-2">
+        <div>© 2026 Indian Market Truths Intelligence. Modeled on DayStarter architecture.</div>
+        <div class="flex space-x-4">
+          <button onclick="openAdminModal()" class="text-crimson font-bold hover:underline">Open Backend Sync Studio</button>
+          <a href="#" class="hover:underline">Methodology</a>
+          <a href="#" class="hover:underline">SEBI Compliance Disclosure</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===================================================================== -->
+  <!-- BUILT-IN BACKEND & EVENING SYNC STUDIO MODAL (ADMIN CMS & LIVE SCRAPER) -->
+  <!-- ===================================================================== -->
+  <div id="admin-modal" class="hidden fixed inset-0 z-50 bg-stone-950/70 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
+    <div class="bg-white dark:bg-stone-900 border-2 border-stone-300 dark:border-stone-700 rounded-xl max-w-4xl w-full shadow-2xl overflow-hidden my-8">
+      
+      <!-- Modal Header -->
+      <div class="bg-stone-900 text-white px-6 py-4 flex items-center justify-between border-b border-stone-800">
+        <div class="flex items-center space-x-2.5">
+          <span class="p-1.5 rounded bg-crimson text-white">
+            <i data-lucide="terminal" class="w-4 h-4"></i>
+          </span>
+          <div>
+            <h3 class="font-serif font-bold text-lg tracking-wide">INDIAN MARKET TRUTHS · Backend & Evening Sync Studio</h3>
+            <p class="text-[11px] font-mono text-stone-400">Pull live from fin.preparoo.app via internet proxy, edit metrics manually, or import/export daily JSON.</p>
+          </div>
+        </div>
+        <button onclick="closeAdminModal()" class="text-stone-400 hover:text-white p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Modal Navigation Tabs -->
+      <div class="flex border-b border-stone-200 dark:border-stone-800 bg-stone-100 dark:bg-stone-950 font-mono text-xs overflow-x-auto">
+        <button onclick="switchAdminTab('tab-live')" id="btn-tab-live" class="admin-tab-btn px-5 py-3 font-bold border-b-2 border-crimson text-crimson bg-white dark:bg-stone-900 flex items-center gap-2">
+          <i data-lucide="globe" class="w-3.5 h-3.5"></i>
+          <span>1. Internet Auto-Fetch (Preparoo Source)</span>
+        </button>
+        <button onclick="switchAdminTab('tab-cms')" id="btn-tab-cms" class="admin-tab-btn px-5 py-3 font-medium text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-white flex items-center gap-2">
+          <i data-lucide="sliders" class="w-3.5 h-3.5"></i>
+          <span>2. Manual Visual CMS Editor</span>
+        </button>
+        <button onclick="switchAdminTab('tab-json')" id="btn-tab-json" class="admin-tab-btn px-5 py-3 font-medium text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-white flex items-center gap-2">
+          <i data-lucide="file-json" class="w-3.5 h-3.5"></i>
+          <span>3. JSON Import / Export & Reset</span>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 max-h-[75vh] overflow-y-auto space-y-6 text-xs">
+
+        <!-- TAB 1: LIVE URL FETCHER & RAW PASTE PARSER -->
+        <div id="tab-live" class="admin-tab-pane space-y-6">
+          <div class="p-4 rounded-lg bg-stone-50 dark:bg-stone-800/60 border border-stone-200 dark:border-stone-700">
+            <h4 class="font-mono font-bold text-sm text-stone-900 dark:text-stone-100 mb-1 flex items-center gap-2">
+              <i data-lucide="radio" class="w-4 h-4 text-crimson"></i>
+              Option A: Pull Live Data Directly from Preparoo URL
+            </h4>
+            <p class="text-stone-600 dark:text-stone-400 mb-4 leading-relaxed">
+              Select an edition date or paste any <code class="font-mono bg-stone-200 dark:bg-stone-700 px-1 rounded">fin.preparoo.app/daystarter-...</code> URL. Our multi-proxy engine (<code class="font-mono">allorigins.win</code> & <code class="font-mono">corsproxy.io</code>) fetches the live webpage, extracts all headlines, sections, and tables, and updates this newspaper automatically.
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
+              <div>
+                <label class="block font-mono text-[10px] uppercase text-stone-500 mb-1">Pick Edition Date (Auto-builds URL)</label>
+                <input type="date" id="sync-date-picker" value="2026-10-23" onchange="buildPreparooUrlFromDate(this.value)" class="w-full font-mono text-xs p-2 rounded border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-900">
+              </div>
+              <div class="sm:col-span-2">
+                <label class="block font-mono text-[10px] uppercase text-stone-500 mb-1">Target Source URL</label>
+                <div class="flex gap-2">
+                  <input type="url" id="sync-target-url" value="https://fin.preparoo.app/daystarter-october-23-2026" class="w-full font-mono text-xs p-2 rounded border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-900">
+                  <button onclick="fetchLiveFromSource()" id="fetch-live-btn" class="px-4 py-2 bg-crimson hover:bg-crimson-dark text-white font-mono font-bold rounded shrink-0 flex items-center gap-1.5 transition">
+                    <i data-lucide="download-cloud" class="w-4 h-4"></i>
+                    <span>Fetch & Sync Now</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Live Fetch Status Log -->
+            <div id="sync-status-log" class="hidden mt-3 p-3 rounded bg-stone-900 text-emerald-400 font-mono text-[11px] leading-relaxed overflow-x-auto">
+              Ready to connect...
+            </div>
+          </div>
+
+          <!-- Option B: Fallback Raw Paste Parser -->
+          <div class="p-4 rounded-lg bg-stone-50 dark:bg-stone-800/60 border border-stone-200 dark:border-stone-700">
+            <h4 class="font-mono font-bold text-sm text-stone-900 dark:text-stone-100 mb-1 flex items-center gap-2">
+              <i data-lucide="clipboard-paste" class="w-4 h-4 text-amber-600"></i>
+              Option B: Zero-Block Fallback — Paste Copied Page Text or HTML
+            </h4>
+            <p class="text-stone-600 dark:text-stone-400 mb-3 leading-relaxed">
+              If your network firewall blocks public CORS proxies or the source page requires login, simply open the reference link in a tab, press <kbd class="px-1.5 py-0.5 bg-stone-200 dark:bg-stone-700 rounded font-mono">Ctrl+A</kbd> then <kbd class="px-1.5 py-0.5 bg-stone-200 dark:bg-stone-700 rounded font-mono">Ctrl+C</kbd> (or View Source), paste it below, and click <strong>Parse & Publish</strong>.
+            </p>
+            <textarea id="raw-paste-input" rows="5" placeholder="Paste full text or HTML from fin.preparoo.app here..." class="w-full font-mono text-xs p-3 rounded border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-900 mb-3"></textarea>
+            <div class="flex justify-end">
+              <button onclick="parseRawPasteContent()" class="px-4 py-2 bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 font-mono font-bold rounded hover:bg-crimson dark:hover:bg-crimson dark:hover:text-white transition">
+                Parse Pasted Content & Update Site
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: MANUAL VISUAL CMS EDITOR -->
+        <div id="tab-cms" class="admin-tab-pane hidden space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block font-mono text-[10px] uppercase text-stone-500 mb-1">Edition Date Header</label>
+              <input type="text" id="cms-date" value="MONDAY, OCTOBER 26, 2026" class="w-full font-mono text-xs p-2 rounded border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800">
+            </div>
+            <div>
+              <label class="block font-mono text-[10px] uppercase text-stone-500 mb-1">Top Announcement Ticker</label>
+              <input type="text" id="cms-announcement" value="October 26, 2026 · Evening Sync Ready · Gift Nifty suggests +44 pts open at 26,180" class="w-full font-mono text-xs p-2 rounded border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800">
+            </div>
+          </div>
+
+          <!-- Hero Market Numbers Editor -->
+          <div class="p-4 rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-50/50 dark:bg-stone-800/40">
+            <div class="font-mono font-bold text-xs uppercase text-crimson mb-3">Hero Ticker Metrics (Evening Closing Numbers)</div>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 font-mono">
+              <div>
+                <label class="text-[10px] text-stone-500">Nifty 50 Value</label>
+                <input type="text" id="cms-nifty-val" value="26,136.40" class="w-full p-1.5 rounded border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-900">
+              </div>
+              <div>
+                <label class="text-[10px] text-stone-500">Nifty 1D %</label>
+                <input type="text" id="cms-nifty-chg" value="▲ +0.38%" class="w-full p-1.5 rounded border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-900">
+              </div>
+              <div>
+                <label class="text-[10px] text-stone-500">Sensex Value</label>
+                <input type="text" id="cms-sensex-val" value="85,410.15" class="w-full p-1.5 rounded border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-900">
+              </div>
+              <div>
+                <label class="text-[10px] text-stone-500">Nifty Bank Value</label>
+                <input type="text" id="cms-bank-val" value="54,820.90" class="w-full p-1.5 rounded border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-900">
+              </div>
+              <div>
+                <label class="text-[10px] text-stone-500">India VIX</label>
+                <input type="text" id="cms-vix-val" value="12.18" class="w-full p-1.5 rounded border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-900">
+              </div>
+              <div>
+                <label class="text-[10px] text-stone-500">Brent Crude ($)</label>
+                <input type="text" id="cms-brent-val" value="$73.40" class="w-full p-1.5 rounded border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-900">
+              </div>
+              <div>
+                <label class="text-[10px] text-stone-500">FII Net Flow</label>
+                <input type="text" id="cms-fii-val" value="-₹2,140 Cr" class="w-full p-1.5 rounded border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-900">
+              </div>
+              <div>
+                <label class="text-[10px] text-stone-500">DII Net Flow</label>
+                <input type="text" id="cms-dii-val" value="+₹3,480 Cr" class="w-full p-1.5 rounded border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-900">
+              </div>
+            </div>
+          </div>
+
+          <!-- Editorial Lead & Deep Dive Editor -->
+          <div class="space-y-4">
+            <div>
+              <label class="block font-mono text-[10px] uppercase text-stone-500 mb-1">Lead Opener Headline</label>
+              <input type="text" id="cms-lead-headline" value="Domestic Mutual Funds Out-Muscle FII Outflows as Repo Rate Neutrality Anchors INR" class="w-full font-serif font-bold text-sm p-2 rounded border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800">
+            </div>
+            <div>
+              <label class="block font-mono text-[10px] uppercase text-stone-500 mb-1">Lead Opener Summary Paragraph</label>
+              <textarea id="cms-lead-summary" rows="3" class="w-full font-serif text-xs p-2 rounded border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800">India enters the final week of October 2026 with an unprecedented divergence: Foreign Institutional Investors have liquidated ₹24,800 Crore of cash equities month-to-date, yet Nifty hovers within 1.5% of its all-time high. Systematic Investment Plan (SIP) gross run-rates above ₹24,000 Crore/month have created a structural liquidity floor.</textarea>
+            </div>
+            <div>
+              <label class="block font-mono text-[10px] uppercase text-stone-500 mb-1">03 Deep Dive Feature Title</label>
+              <input type="text" id="cms-deepdive-title" value="When Price Leaves NAV Behind: The Dangerous 18% Premium in India’s Global Tech ETFs" class="w-full font-serif font-bold text-sm p-2 rounded border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800">
+            </div>
+            <div>
+              <label class="block font-mono text-[10px] uppercase text-stone-500 mb-1">03 Deep Dive Feature Content (Paragraphs)</label>
+              <textarea id="cms-deepdive-body" rows="4" class="w-full font-serif text-xs p-2 rounded border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800">An escalating structural distortion has taken root across the National Stock Exchange (NSE) and Bombay Stock Exchange (BSE). Due to the decade-old $7-billion regulatory industry limit imposed by the Reserve Bank of India on domestic mutual funds investing abroad, Indian asset managers have been legally barred from issuing new ETF creation units in overseas tech strategies for months.</textarea>
+            </div>
+          </div>
+
+          <div class="flex justify-end gap-3 pt-3 border-t border-stone-200 dark:border-stone-800">
+            <button onclick="saveCmsChanges()" class="px-5 py-2.5 bg-crimson hover:bg-crimson-dark text-white font-mono font-bold rounded shadow transition flex items-center gap-2">
+              <i data-lucide="save" class="w-4 h-4"></i>
+              <span>Apply & Save Evening Update to Browser</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- TAB 3: IMPORT / EXPORT JSON & RESET -->
+        <div id="tab-json" class="admin-tab-pane hidden space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="p-4 rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/50">
+              <h4 class="font-mono font-bold text-sm mb-2">Export Today's Edition (`market_data.json`)</h4>
+              <p class="text-stone-600 dark:text-stone-400 mb-4 leading-relaxed">
+                Download the current state of the publication as a structured JSON file. You can commit this file to your web server or GitHub repository to update all visitors globally.
+              </p>
+              <button onclick="exportMarketDataJson()" class="px-4 py-2 bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 font-mono font-bold rounded flex items-center gap-2 hover:bg-crimson transition">
+                <i data-lucide="download" class="w-4 h-4"></i>
+                <span>Download market_data.json</span>
+              </button>
+            </div>
+
+            <div class="p-4 rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/50">
+              <h4 class="font-mono font-bold text-sm mb-2">Import Edition from JSON File</h4>
+              <p class="text-stone-600 dark:text-stone-400 mb-4 leading-relaxed">
+                Upload a previously saved or Python-scraped <code class="font-mono">market_data.json</code> file to immediately populate all sections.
+              </p>
+              <input type="file" id="json-file-input" accept=".json" onchange="importMarketDataJson(event)" class="block w-full text-xs font-mono file:mr-3 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-mono file:font-bold file:bg-crimson file:text-white hover:file:bg-crimson-dark">
+            </div>
+          </div>
+
+          <div class="p-4 rounded-lg border border-rose-200 dark:border-rose-900/50 bg-rose-50/40 dark:bg-rose-950/20 flex items-center justify-between">
+            <div>
+              <div class="font-mono font-bold text-rose-700 dark:text-rose-400">Reset to Factory Default Edition</div>
+              <div class="text-stone-500 text-[11px]">Clears custom LocalStorage edits and restores the baseline October 2026 edition.</div>
+            </div>
+            <button onclick="resetToDefaultEdition()" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-mono text-xs font-bold rounded">
+              Reset All Data
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Share & Notification Modal (Toast / Dialog) -->
+  <div id="share-modal" class="hidden fixed inset-0 z-50 bg-stone-950/50 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-stone-900 border border-stone-300 dark:border-stone-700 rounded-lg p-6 max-w-sm w-full shadow-xl">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-serif font-bold text-lg">Share Briefing</h3>
+        <button onclick="closeShareModal()" class="text-stone-400 hover:text-stone-600 dark:hover:text-stone-200">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <p class="text-xs text-stone-600 dark:text-stone-400 mb-4 font-sans">
+        Copy briefing link or dispatch to Bloomberg Terminal / institutional group:
+      </p>
+      <div class="flex items-center space-x-2 mb-4">
+        <input id="share-url" type="text" readonly value="https://indianmarkettruths.com/brief-oct-26-2026" class="w-full text-xs font-mono bg-stone-100 dark:bg-stone-800 p-2 rounded border border-stone-300 dark:border-stone-700">
+        <button onclick="copyShareLink()" class="bg-stone-900 text-white dark:bg-stone-100 dark:text-stone-900 px-3 py-2 rounded text-xs font-mono font-bold hover:bg-crimson transition">Copy</button>
+      </div>
+      <div id="copy-status" class="hidden text-[11px] font-mono text-emerald-600 text-center">URL copied to clipboard!</div>
+    </div>
+  </div>
+
+  <!-- Notification Toast for Actions -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-stone-900 text-white text-xs font-mono px-4 py-3 rounded-lg shadow-lg border border-stone-700 flex items-center space-x-2">
+    <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+    <span id="toast-message">Action confirmed</span>
+  </div>
+
+  <!-- Application Logic -->
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // 1. Reading Progress Bar & TOC Scroll Spy
+    window.addEventListener('scroll', () => {
+      const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      document.getElementById('scroll-progress-bar').style.width = scrolled + '%';
+
+      // Scroll Spy for TOC active links
+      const sections = document.querySelectorAll('section[id], div[id="sec-deepdive"]');
+      let currentSecId = '';
+      sections.forEach(sec => {
+        const top = sec.offsetTop - 150;
+        if (winScroll >= top) {
+          currentSecId = sec.getAttribute('id');
+        }
+      });
+
+      document.querySelectorAll('.toc-link').forEach(link => {
+        link.classList.remove('bg-stone-200', 'dark:bg-stone-800', 'text-crimson');
+        if (link.getAttribute('href') === '#' + currentSecId) {
+          link.classList.add('bg-stone-200', 'dark:bg-stone-800', 'text-crimson');
+        }
+      });
+    });
+
+    // 2. Dark Mode Toggle
+    function toggleDarkMode() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('imt_theme', isDark ? 'dark' : 'light');
+    }
+    // Initialize Theme from localStorage or system
+    if (localStorage.getItem('imt_theme') === 'dark' || (!localStorage.getItem('imt_theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    }
+
+    // 3. Font Size Adjuster
+    function setFontSize(size) {
+      const article = document.getElementById('article-body');
+      article.classList.remove('text-sm', 'text-base', 'text-lg');
+      if (size === 'sm') {
+        article.classList.add('text-sm');
+        showToast('Text size: Compact');
+      } else if (size === 'lg') {
+        article.classList.add('text-lg');
+        showToast('Text size: Large Reading Mode');
+      } else {
+        article.classList.add('text-base');
+        showToast('Text size: Standard');
+      }
+    }
+
+    // 4. In-Edition Filter & Search
+    function filterBriefing(category) {
+      const cards = document.querySelectorAll('.brief-card');
+      const pills = document.querySelectorAll('.filter-pill');
+
+      pills.forEach(p => {
+        p.classList.remove('bg-stone-900', 'text-white', 'dark:bg-stone-100', 'dark:text-stone-900');
+        p.classList.add('text-stone-600', 'dark:text-stone-300');
+      });
+      event.target.classList.add('bg-stone-900', 'text-white', 'dark:bg-stone-100', 'dark:text-stone-900');
+
+      cards.forEach(card => {
+        if (category === 'all') {
+          card.style.display = 'block';
+        } else if (category === 'macro' && card.id === 'sec-macro') {
+          card.style.display = 'block';
+        } else if (category === 'deepdive' && card.id === 'sec-deepdive') {
+          card.style.display = 'block';
+        } else if (category === 'earnings' && card.id === 'sec-earnings') {
+          card.style.display = 'block';
+        } else if (category === 'flows' && card.id === 'sec-flows') {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    function handleSearch(query) {
+      const q = query.toLowerCase().trim();
+      const cards = document.querySelectorAll('.brief-card');
+      if (!q) {
+        cards.forEach(c => c.style.display = 'block');
+        return;
+      }
+      cards.forEach(c => {
+        const text = c.innerText.toLowerCase();
+        c.style.display = text.includes(q) ? 'block' : 'none';
+      });
+    }
+
+    // 5. Audio Briefing TTS Mock / SpeechSynthesis
+    let isSpeaking = false;
+    function toggleAudioBriefing() {
+      const label = document.getElementById('tts-label');
+      if ('speechSynthesis' in window) {
+        if (isSpeaking) {
+          window.speechSynthesis.cancel();
+          isSpeaking = false;
+          label.textContent = "Listen to Brief (6 min)";
+          showToast('Audio briefing paused.');
+        } else {
+          const leadText = "Indian Market Truths, Monday October 26, 2026. Domestic mutual funds out-muscle FII outflows as repo rate neutrality anchors the Indian Rupee. Nifty 50 closes at 26,136.";
+          const utterance = new SpeechSynthesisUtterance(leadText);
+          utterance.rate = 1.0;
+          utterance.pitch = 1.0;
+          utterance.onend = () => {
+            isSpeaking = false;
+            label.textContent = "Listen to Brief (6 min)";
+          };
+          window.speechSynthesis.speak(utterance);
+          isSpeaking = true;
+          label.textContent = "Playing Briefing (Tap to Pause)";
+          showToast('Audio briefing started.');
+        }
+      } else {
+        showToast('TTS not supported in this browser.');
+      }
+    }
+
+    // 6. Interactive Calculator for Deep Dive
+    function updateEtfCalculator() {
+      const val = parseFloat(document.getElementById('etf-calc-select').value);
+      const res = document.getElementById('calc-result');
+      res.textContent = `Immediate downside if RBI raises cap: -${val}%`;
+    }
+
+    // 7. Bookmarking & LocalStorage
+    let bookmarks = JSON.parse(localStorage.getItem('imt_bookmarks') || '[]');
+    function renderBookmarks() {
+      const countEl = document.getElementById('saved-count');
+      const listEl = document.getElementById('saved-list');
+      countEl.textContent = bookmarks.length;
+      if (bookmarks.length === 0) {
+        listEl.innerHTML = '<span class="italic text-stone-400">Click bookmark on any section to pin for evening recap.</span>';
+        return;
+      }
+      listEl.innerHTML = bookmarks.map((b, idx) => `
+        <div class="flex items-center justify-between py-1 border-b border-stone-200 dark:border-stone-800 text-[11px]">
+          <a href="#${b.id}" class="truncate hover:text-crimson">${b.title}</a>
+          <button onclick="removeBookmark(${idx})" class="text-stone-400 hover:text-rose-600 ml-2">×</button>
+        </div>
+      `).join('');
+    }
+
+    function bookmarkSection(id, title) {
+      if (!bookmarks.some(b => b.id === id)) {
+        bookmarks.push({ id, title });
+        localStorage.setItem('imt_bookmarks', JSON.stringify(bookmarks));
+        renderBookmarks();
+        showToast(`Saved to Evening Recap: ${title}`);
+      } else {
+        showToast('Section is already bookmarked.');
+      }
+    }
+
+    function removeBookmark(idx) {
+      bookmarks.splice(idx, 1);
+      localStorage.setItem('imt_bookmarks', JSON.stringify(bookmarks));
+      renderBookmarks();
+      showToast('Bookmark removed');
+    }
+
+    // 8. Quiz Engine
+    function checkAnswer(btn, isCorrect) {
+      const options = document.querySelectorAll('.quiz-opt');
+      options.forEach(opt => {
+        opt.disabled = true;
+        opt.classList.remove('border-crimson');
+      });
+      const explanation = document.getElementById('quiz-explanation');
+
+      if (isCorrect) {
+        btn.classList.add('bg-emerald-100', 'dark:bg-emerald-950', 'border-emerald-600');
+        explanation.classList.remove('hidden');
+        showToast('Correct answer! Unit creation eliminates NAV gap.');
+      } else {
+        btn.classList.add('bg-rose-100', 'dark:bg-rose-950', 'border-rose-600');
+        explanation.classList.remove('hidden');
+        explanation.innerHTML = '<span class="font-mono font-bold text-rose-600">Incorrect.</span> Arbitrageurs will create shares in the primary market and sell them into the secondary exchange until price converges with fair value NAV.';
+        showToast('Review arbitrage mechanics.');
+      }
+    }
+
+    // 9. Toast Notification Handler
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const text = document.getElementById('toast-message');
+      text.textContent = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 2600);
+    }
+
+    // 10. Subscribe Handler
+    function handleQuickSubscribe(e) {
+      e.preventDefault();
+      showToast('Subscribed! Dispatching daily at 07:30 AM IST.');
+      e.target.reset();
+    }
+
+    // 11. Share Modal & Clipboard Copy
+    function openShareModal() {
+      document.getElementById('share-modal').classList.remove('hidden');
+    }
+    function closeShareModal() {
+      document.getElementById('share-modal').classList.add('hidden');
+      document.getElementById('copy-status').classList.add('hidden');
+    }
+    function copyShareLink() {
+      const copyText = document.getElementById('share-url');
+      copyText.select();
+      copyText.setSelectionRange(0, 99999);
+      document.execCommand('copy');
+      document.getElementById('copy-status').classList.remove('hidden');
+      showToast('Link copied to clipboard!');
+      setTimeout(closeShareModal, 1200);
+    }
+
+    // =========================================================================
+    // 12. BACKEND & EVENING SYNC STUDIO ENGINE (LIVE FETCH, CMS, JSON STORAGE)
+    // =========================================================================
+    function openAdminModal() {
+      document.getElementById('admin-modal').classList.remove('hidden');
+    }
+
+    function closeAdminModal() {
+      document.getElementById('admin-modal').classList.add('hidden');
+    }
+
+    function switchAdminTab(tabId) {
+      document.querySelectorAll('.admin-tab-pane').forEach(el => el.classList.add('hidden'));
+      document.getElementById(tabId).classList.remove('hidden');
+
+      document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+        btn.classList.remove('border-b-2', 'border-crimson', 'text-crimson', 'bg-white', 'dark:bg-stone-900', 'font-bold');
+        btn.classList.add('text-stone-600', 'dark:text-stone-400');
+      });
+
+      const activeBtn = document.getElementById('btn-' + tabId);
+      activeBtn.classList.add('border-b-2', 'border-crimson', 'text-crimson', 'bg-white', 'dark:bg-stone-900', 'font-bold');
+      activeBtn.classList.remove('text-stone-600', 'dark:text-stone-400');
+    }
+
+    // Auto-build Preparoo DayStarter URL from date input
+    function buildPreparooUrlFromDate(dateStr) {
+      if (!dateStr) return;
+      const parts = dateStr.split('-');
+      const year = parts[0];
+      const monthIndex = parseInt(parts[1], 10) - 1;
+      const day = parseInt(parts[2], 10); // Day without leading zero
+      const months = [
+        'january', 'february', 'march', 'april', 'may', 'june',
+        'july', 'august', 'september', 'october', 'november', 'december'
+      ];
+      const slug = `https://fin.preparoo.app/daystarter-${months[monthIndex]}-${day}-${year}`;
+      document.getElementById('sync-target-url').value = slug;
+    }
+
+    // Fetch Live HTML from Preparoo URL via Multi-CORS Proxy Fallback
+    async function fetchLiveFromSource() {
+      const targetUrl = document.getElementById('sync-target-url').value.trim();
+      const logEl = document.getElementById('sync-status-log');
+      const btn = document.getElementById('fetch-live-btn');
+
+      if (!targetUrl) {
+        showToast('Please enter a valid target URL');
+        return;
+      }
+
+      logEl.classList.remove('hidden');
+      logEl.innerHTML = `> Connecting to live source: ${targetUrl}...\n> Trying CORS Proxy #1 (allorigins.win)...`;
+      btn.disabled = true;
+      btn.innerHTML = `<span>Syncing...</span>`;
+
+      const proxies = [
+        `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`,
+        `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`,
+        `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetUrl)}`
+      ];
+
+      let htmlContent = null;
+
+      for (let i = 0; i < proxies.length; i++) {
+        try {
+          logEl.innerHTML += `\n> Attempt ${i + 1}: Fetching via proxy...`;
+          const response = await fetch(proxies[i]);
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+          if (proxies[i].includes('allorigins.win')) {
+            const data = await response.json();
+            htmlContent = data.contents;
+          } else {
+            htmlContent = await response.text();
+          }
+
+          if (htmlContent && htmlContent.length > 200) {
+            logEl.innerHTML += `\n> Success! Received ${htmlContent.length} bytes of live briefing data.`;
+            break;
+          }
+        } catch (err) {
+          logEl.innerHTML += `\n> Proxy #${i + 1} failed (${err.message}). Trying next fallback...`;
+        }
+      }
+
+      btn.disabled = false;
+      btn.innerHTML = `<i data-lucide="download-cloud" class="w-4 h-4"></i><span>Fetch & Sync Now</span>`;
+      lucide.createIcons();
+
+      if (!htmlContent) {
+        logEl.innerHTML += `\n> [NOTICE] Public proxies could not reach the URL or page is client-rendered (SPA). Use Option B below: Copy & Paste the page text/HTML directly into the box to parse immediately!`;
+        showToast('Proxy blocked or SPA detected. Use Option B Paste box.');
+        return;
+      }
+
+      parseAndRenderExternalHtml(htmlContent, targetUrl);
+    }
+
+    // Parse DOM or Text from Live Fetch / Raw Paste and Populate Newspaper
+    function parseAndRenderExternalHtml(rawHtmlOrText, sourceUrl) {
+      const logEl = document.getElementById('sync-status-log');
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(rawHtmlOrText, 'text/html');
+
+      // Remove scripts, styles, navbars
+      doc.querySelectorAll('script, style, noscript, nav, footer').forEach(el => el.remove());
+
+      const extractedSections = [];
+      const headings = doc.querySelectorAll('h1, h2, h3');
+
+      if (headings.length > 0) {
+        headings.forEach(h => {
+          const title = h.textContent.trim();
+          if (!title) return;
+          const paragraphs = [];
+          let next = h.nextElementSibling;
+          while (next && !['H1', 'H2', 'H3'].includes(next.tagName)) {
+            const text = next.textContent.trim();
+            if (text.length > 20) paragraphs.push(text);
+            next = next.nextElementSibling;
+          }
+          if (paragraphs.length > 0) {
+            extractedSections.push({ title, paragraphs });
+          }
+        });
+      }
+
+      // Fallback if plain text was pasted or SPA shell returned
+      const plainTextLines = rawHtmlOrText
+        .replace(/<[^>]+>/g, '\n')
+        .split('\n')
+        .map(l => l.trim())
+        .filter(l => l.length > 35);
+
+      const container = document.getElementById('live-scraped-container');
+      const contentBox = document.getElementById('live-scraped-content');
+      document.getElementById('scraped-source-url').textContent = sourceUrl;
+
+      let renderedHtml = '';
+
+      if (extractedSections.length > 0) {
+        // Also update the main Lead Headline with the first major heading
+        document.getElementById('lead-headline').textContent = extractedSections[0].title;
+        if (extractedSections[0].paragraphs[0]) {
+          document.getElementById('lead-summary').textContent = extractedSections[0].paragraphs[0];
+        }
+
+        renderedHtml = extractedSections.map((sec, idx) => `
+          <div class="pb-5 border-b border-stone-200 dark:border-stone-800 last:border-b-0">
+            <div class="font-mono text-[10px] text-crimson uppercase font-bold mb-1">LIVE SECTION 0${idx + 1}</div>
+            <h3 class="font-serif text-xl font-bold text-stone-950 dark:text-stone-50 mb-2">${sec.title}</h3>
+            <div class="space-y-2 text-sm sm:text-base">
+              ${sec.paragraphs.map(p => `<p>${p}</p>`).join('')}
+            </div>
+          </div>
+        `).join('');
+      } else if (plainTextLines.length > 0) {
+        document.getElementById('lead-headline').textContent = plainTextLines[0].slice(0, 120);
+        renderedHtml = `
+          <div class="space-y-3 text-sm sm:text-base">
+            ${plainTextLines.slice(0, 25).map(line => `<p class="pb-2 border-b border-stone-200/60 dark:border-stone-800">${line}</p>`).join('')}
+          </div>
+        `;
+      } else {
+        renderedHtml = `<p class="text-xs font-mono text-amber-600">Source URL is a dynamic client-side app (React/Next.js) whose text renders after JavaScript execution. Please copy the visible text from the page and paste it into Option B in the Admin Studio!</p>`;
+      }
+
+      contentBox.innerHTML = renderedHtml;
+      container.classList.remove('hidden');
+
+      const nowStr = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) + ' IST SYNCED';
+      document.getElementById('last-sync-timestamp').textContent = nowStr;
+      document.getElementById('sync-status-badge').classList.remove('hidden');
+
+      if (logEl) {
+        logEl.innerHTML += `\n> [COMPLETE] Live briefing parsed and published to main layout.`;
+      }
+      showToast('Live Source synced & published!');
+    }
+
+    function parseRawPasteContent() {
+      const raw = document.getElementById('raw-paste-input').value.trim();
+      if (!raw) {
+        showToast('Please paste text or HTML first.');
+        return;
+      }
+      parseAndRenderExternalHtml(raw, 'Manual Paste Sync (Preparoo DayStarter)');
+      closeAdminModal();
+    }
+
+    function hideLiveScrapedFeed() {
+      document.getElementById('live-scraped-container').classList.add('hidden');
+    }
+
+    // Save Visual CMS Editor Changes to DOM + LocalStorage
+    function saveCmsChanges() {
+      const state = {
+        date: document.getElementById('cms-date').value,
+        announcement: document.getElementById('cms-announcement').value,
+        niftyVal: document.getElementById('cms-nifty-val').value,
+        niftyChg: document.getElementById('cms-nifty-chg').value,
+        sensexVal: document.getElementById('cms-sensex-val').value,
+        bankVal: document.getElementById('cms-bank-val').value,
+        vixVal: document.getElementById('cms-vix-val').value,
+        brentVal: document.getElementById('cms-brent-val').value,
+        fiiVal: document.getElementById('cms-fii-val').value,
+        diiVal: document.getElementById('cms-dii-val').value,
+        leadHeadline: document.getElementById('cms-lead-headline').value,
+        leadSummary: document.getElementById('cms-lead-summary').value,
+        deepdiveTitle: document.getElementById('cms-deepdive-title').value,
+        deepdiveBody: document.getElementById('cms-deepdive-body').value,
+        updatedAt: new Date().toLocaleString('en-IN')
+      };
+
+      applyStateToDom(state);
+      localStorage.setItem('imt_cms_state', JSON.stringify(state));
+      closeAdminModal();
+      showToast('Evening briefing updated & saved to browser!');
+    }
+
+    function applyStateToDom(state) {
+      if (!state) return;
+      if (state.date) document.getElementById('edition-date-display').textContent = state.date;
+      if (state.announcement) document.getElementById('top-announcement-text').textContent = state.announcement;
+      if (state.niftyVal) document.getElementById('ticker-nifty-val').textContent = state.niftyVal;
+      if (state.niftyChg) document.getElementById('ticker-nifty-chg').textContent = state.niftyChg;
+      if (state.sensexVal) document.getElementById('ticker-sensex-val').textContent = state.sensexVal;
+      if (state.bankVal) document.getElementById('ticker-bank-val').textContent = state.bankVal;
+      if (state.vixVal) document.getElementById('ticker-vix-val').textContent = state.vixVal;
+      if (state.brentVal) document.getElementById('ticker-brent-val').textContent = state.brentVal;
+      if (state.fiiVal) document.getElementById('ticker-fii-val').textContent = state.fiiVal;
+      if (state.diiVal) document.getElementById('ticker-dii-val').textContent = state.diiVal;
+      if (state.leadHeadline) document.getElementById('lead-headline').textContent = state.leadHeadline;
+      if (state.leadSummary) document.getElementById('lead-summary').textContent = state.leadSummary;
+      if (state.deepdiveTitle) document.getElementById('deepdive-title').textContent = state.deepdiveTitle;
+      if (state.deepdiveBody) {
+        document.getElementById('deepdive-body-top').innerHTML = state.deepdiveBody
+          .split('\n')
+          .filter(Boolean)
+          .map(p => `<p>${p}</p>`)
+          .join('');
+      }
+      document.getElementById('sync-status-badge').classList.remove('hidden');
+    }
+
+    // Export / Import JSON functions
+    function exportMarketDataJson() {
+      const currentData = localStorage.getItem('imt_cms_state')
+        ? JSON.parse(localStorage.getItem('imt_cms_state'))
+        : {
+            date: document.getElementById('edition-date-display').textContent,
+            announcement: document.getElementById('top-announcement-text').textContent,
+            niftyVal: document.getElementById('ticker-nifty-val').textContent,
+            sensexVal: document.getElementById('ticker-sensex-val').textContent,
+            bankVal: document.getElementById('ticker-bank-val').textContent,
+            leadHeadline: document.getElementById('lead-headline').textContent,
+            leadSummary: document.getElementById('lead-summary').textContent,
+            deepdiveTitle: document.getElementById('deepdive-title').textContent
+          };
+
+      const blob = new Blob([JSON.stringify(currentData, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'market_data.json';
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('Exported market_data.json!');
+    }
+
+    function importMarketDataJson(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          applyStateToDom(imported);
+          localStorage.setItem('imt_cms_state', JSON.stringify(imported));
+          closeAdminModal();
+          showToast('Imported market_data.json successfully!');
+        } catch (err) {
+          showToast('Invalid JSON file format.');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function resetToDefaultEdition() {
+      localStorage.removeItem('imt_cms_state');
+      location.reload();
+    }
+
+    // Load any saved CMS state on startup
+    const savedState = localStorage.getItem('imt_cms_state');
+    if (savedState) {
+      try {
+        applyStateToDom(JSON.parse(savedState));
+      } catch (e) {}
+    }
+
+    // Initialize bookmarks on page load
+    renderBookmarks();
+  </script>
+</body>
+</html>
