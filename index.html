@@ -1863,9 +1863,9 @@
     // Initialize bookmarks on page load
     renderBookmarks();
   </script>
-  <script>
-  // Automatically pull today's automated data on page load
-  fetch('market_data.json')
+<script>
+  // The '?v=' + new Date().getTime() forces the browser to download fresh data every time
+  fetch('market_data.json?v=' + new Date().getTime())
     .then(response => response.json())
     .then(data => {
       if(data.date) document.getElementById('display-date').textContent = data.date;
