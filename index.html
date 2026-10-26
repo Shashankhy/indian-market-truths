@@ -1863,5 +1863,16 @@
     // Initialize bookmarks on page load
     renderBookmarks();
   </script>
+  <script>
+  // Automatically pull today's automated data on page load
+  fetch('market_data.json')
+    .then(response => response.json())
+    .then(data => {
+      if(data.date) document.getElementById('display-date').textContent = data.date;
+      if(data.lead_headline) document.getElementById('lead-headline').textContent = data.lead_headline;
+      if(data.lead_body) document.getElementById('lead-body').innerHTML = data.lead_body;
+    })
+    .catch(err => console.log("Waiting for evening update..."));
+</script>
 </body>
 </html>
